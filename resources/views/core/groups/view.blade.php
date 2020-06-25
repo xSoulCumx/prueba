@@ -32,7 +32,7 @@
 			
 
 	<div class="m-t">
-	<table class="table table-striped table-bordered" >
+	<table class="table table-striped " >
 		<tbody>	
 	
 					<tr>

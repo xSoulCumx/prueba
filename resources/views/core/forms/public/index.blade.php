@@ -6,7 +6,7 @@
 </div>
 <div class="container m-t">		
 <div class="table-responsive">    
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped ">
         <thead>
 			<tr>
 				<th> No </th>

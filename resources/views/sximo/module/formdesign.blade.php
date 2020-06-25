@@ -7,9 +7,9 @@
 <div class="p-3">
 
 <ul class="nav nav-tabs" style="margin-bottom:10px;">
-    <li class="nav-item" ><a class="nav-link " href="{{ URL::to('sximo/module/form/'.$module_name)}}">Form Configuration </a></li>
-    <li class="nav-item" ><a class="nav-link " href="{{ URL::to('sximo/module/subform/'.$module_name)}}">Sub Form </a></li> 
-  <li class="nav-item"><a class="nav-link active" href="{{ URL::to('sximo/module/formdesign/'.$module_name)}}">Form Layout</a></li> 
+    <li class="nav-item" ><a class="nav-link " href="{{ url('sximo/module/form/'.$module_name)}}">Form Configuration </a></li>
+    <li class="nav-item" ><a class="nav-link " href="{{ url('sximo/module/subform/'.$module_name)}}">Sub Form </a></li> 
+  <li class="nav-item"><a class="nav-link active" href="{{ url('sximo/module/formdesign/'.$module_name)}}">Form Layout</a></li> 
   
 </ul>
 
@@ -41,12 +41,18 @@
 	<div class="form-group">
 		<label> Display Form As : </label>
 		<div class="radio-group">		
-			<input type="radio" name="format" value="grid"
+			<input type="radio" name="format" value="grid" class="minimal-green"
 			<?php if($format == 'grid') echo 'checked';?>
 			  /> Grid		
-			<input type="radio" name="format" value="tab"
+			<input type="radio" name="format" value="tab" class="minimal-green"
 			<?php if($format == 'tab') echo 'checked';?>
-			  /> Tab		
+			  /> Tab	
+			<input type="radio" name="format" value="groupped" class="minimal-green"
+			<?php if($format == 'groupped') echo 'checked';?>
+			  /> Grouped	
+			<input type="radio" name="format" value="wizzard" class="minimal-green"
+			<?php if($format == 'wizzard') echo 'checked';?>
+			  /> Wizzard / Step Form	  	
 		</div>		
 	</div> 
 	
@@ -54,11 +60,11 @@
 		<label> Form Layout : </label>
 		<div class="radio-group">
 		
-			<input type="radio" name="display" value="horizontal"
+			<input type="radio" name="display" value="horizontal" class="minimal-green"
 			<?php if($display == 'horizontal') echo 'checked';?>
 			  /> Normal
 		
-			<input type="radio" name="display" value="vertical"
+			<input type="radio" name="display" value="vertical" class="minimal-green"
 			<?php if($display == 'vertical') echo 'checked';?>
 			  /> Vertical
 		

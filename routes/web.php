@@ -38,6 +38,8 @@ Route::get('user/socialize/{any?}','UserController@socialize');
 Route::get('user/autosocialize/{any?}','UserController@autosocialize');
 //
 Route::post('user/signin','UserController@postSignin');
+Route::post('user/login','UserController@postSigninMobile');
+Route::post('user/signup','UserController@postSignupMobile');
 Route::post('user/create','UserController@postCreate');
 Route::post('user/saveprofile','UserController@postSaveprofile');
 Route::post('user/savepassword','UserController@postSavepassword');
@@ -46,7 +48,8 @@ Route::post('user/request','UserController@postRequest');
 
 /* Posts & Blogs */
 Route::get('posts','HomeController@posts');
-Route::get('posts/{any}','HomeController@posts');
+Route::get('posts/category/{any}','HomeController@posts');
+Route::get('posts/read/{any}','HomeController@read');
 Route::post('posts/comment','HomeController@comment');
 Route::get('posts/remove/{id?}/{id2?}/{id3?}','HomeController@remove');
 // Start Routes for Notification 
@@ -60,6 +63,7 @@ include('pages.php');
 
 
 Route::resource('sximoapi','SximoapiController');
+Route::resource('services/posts', 'Services\PostController');
 
 
 

@@ -9,14 +9,14 @@
 			<div class="toolbar-nav">
 			<!-- Toolbar Top -->
 			<div class="row">
-				<div class="col-md-4"> 	
+				<div class="col-md-8"> 	
 					@if($access['is_add'] ==1)
-					<a href="{{ url('core/pages/create?return='.$return) }}" class="btn btn-default btn-sm"  
-						title="{{ __('core.btn_create') }}"><i class=" fa fa-plus "></i> Create New </a>
+					<a href="{{ url('cms/pages/create?return='.$return) }}" class="btn btn-default btn-sm"  
+						title="{{ __('core.btn_create') }}"><i class=" lni-add-file "></i> Create New </a>
 					@endif
 
 					<div class="btn-group">
-						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-menu5"></i> Bulk Action </button>
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="lni-menu"></i> Bulk Action </button>
 				        <ul class="dropdown-menu">
 				         @if($access['is_excel'] ==1)
 							<li class="nav-item"><a href="{{ url( $pageModule .'/export?do=excel&return='.$return) }}" class="tips nav-link"> Export CSV </a></li>	
@@ -35,13 +35,13 @@
 				        </ul>
 				    </div>    
 				</div>
-				<div class="col-md-4 pull-right">
-					<div class="input-group">
-					      <div class="input-group-btn">
-					        <button type="button" class="btn btn-default btn-sm " 
+				<div class="col-md-4 text-right">
+					<div class="input-group text-right pull-right">
+					      <div class="input-group-prepend">
+					        <button type="button" class="btn btn-default btn-sm  " 
 					        onclick="SximoModal('{{ url($pageModule."/search") }}','Advance Search'); " ><i class="fa fa-filter"></i> Filter </button>
 					      </div><!-- /btn-group -->
-					      <input type="text" class="form-control input-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
+					      <input type="text" class="form-control  form-control-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
 					    </div>
 				</div>    
 			</div>			
@@ -50,9 +50,9 @@
 
 			<!-- Table Grid -->
 			<div class="table-container" >
- 			{!! Form::open(array('url'=>'core/pages?'.$return, 'class'=>'form-horizontal m-t' ,'id' =>'SximoTable' )) !!}
+ 			{!! Form::open(array('url'=>'cms/pages?'.$return, 'class'=>'form-horizontal m-t' ,'id' =>'SximoTable' )) !!}
 			
-		    <table class="table table-striped table-hover " id="{{ $pageModule }}Table">
+		    <table class="table table-hover " id="{{ $pageModule }}Table">
 		        <thead>
 					<tr>
 						<th style="width: 3% !important;" class="number"> No </th>
@@ -87,13 +87,13 @@
 							<td>
 
 							 	<div class="dropdown">
-								  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"> Action </button>
+								  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"> {{ __('core.btn_action') }} </button>
 								  <ul class="dropdown-menu">
 								 	@if($access['is_detail'] ==1)
 									<li class="nav-item"><a href="{{ url($row->alias)}}" target="_blank" class="nav-link tips nav-link" title="{{ __('core.btn_view') }}"> {{ __('core.btn_view') }} </a></li>
 									@endif
 									@if($access['is_edit'] ==1)
-									<li class="nav-item"><a  href="{{ url('core/pages/'.$row->pageID.'/edit?return='.$return) }}" class="nav-link tips nav-link" title="{{ __('core.btn_edit') }}"> {{ __('core.btn_edit') }} </a></li>
+									<li class="nav-item"><a  href="{{ url('cms/pages/'.$row->pageID.'/edit?return='.$return) }}" class="nav-link tips nav-link" title="{{ __('core.btn_edit') }}"> {{ __('core.btn_edit') }} </a></li>
 									@endif
 									<li class="divider" role="separator"></li>
 									@if($access['is_remove'] ==1)

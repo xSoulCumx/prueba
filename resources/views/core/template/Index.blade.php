@@ -41,7 +41,7 @@
     <div class="col-sm-6">
       <div class="box">
      <h5> Tables </h5>   
-<table class="table table-bordered">
+<table class="table ">
           <thead class="no-border">
             <tr>
               <th>Type</th>

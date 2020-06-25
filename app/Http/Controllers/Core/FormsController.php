@@ -725,7 +725,7 @@ class FormsController extends Controller {
 				$form = '
 				<div class="form-group">
 					<label class="  " >'.ucwords($label).'</label>
-					<div class="input-group m-b" style="width:150px !important;">
+					<div class="input-group m-b">
 						<input type="text" class="form-control" name="'.$field.'" value="" placeholder="" /> 
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					</div>
@@ -912,7 +912,7 @@ $forms .= self::formShow( $rows['type'] , $rows['field'] , $rows['required'] , $
 
 			case 'text_date';
 				$form = "
-				<div class=\"input-group m-b\" style=\"width:150px !important;\">
+				<div class=\"input-group m-b\" >
 					{!! Form::text('{$field}', '',array('class'=>'form-control date')) !!}
 					<span class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></span>
 				</div>";
@@ -920,7 +920,7 @@ $forms .= self::formShow( $rows['type'] , $rows['field'] , $rows['required'] , $
 				
 			case 'text_time';
 				$form = "
-					<div class=\"input-group m-b\" style=\"width:150px !important;\">
+					<div class=\"input-group m-b\" >
 						input  type='text' name='{$field}' id='{$field}' value='' 
 						{$mandatory}  {$attribute}   class='form-control {$extend_class}'
 						data-date-format='yyyy-mm-dd'
@@ -933,8 +933,8 @@ $forms .= self::formShow( $rows['type'] , $rows['field'] , $rows['required'] , $
 			case 'text_datetime';
 				if($required !='0') { $mandatory = 'required'; }
 				$form = "
-				<div class=\"input-group m-b\" style=\"width:150px !important;\">
-					{!! Form::text('{$field}','',array('class'=>'form-control datetime', 'style'=>'width:150px !important;')) !!}
+				<div class=\"input-group m-b\" >
+					{!! Form::text('{$field}','',array('class'=>'form-control datetime')) !!}
 					<span class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></span>
 				</div>
 				";
@@ -1036,7 +1036,7 @@ $forms .= self::formShow( $rows['type'] , $rows['field'] , $rows['required'] , $
 
 				} else {
 					$form = "<input  type='file' name='{$field}' id='{$field}' ";
-					$form .= "style='width:150px !important;' {$attribute} />";
+					$form .= "style='' {$attribute} />";
 
 				}
 				break;						

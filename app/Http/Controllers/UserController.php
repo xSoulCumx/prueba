@@ -7,6 +7,7 @@ use Socialize;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Validator, Input, Redirect ; 
+use Illuminate\Support\Str;
 
 class UserController extends Controller {
 
@@ -42,19 +43,26 @@ class UserController extends Controller {
 			'password'=>'required|between:6,12|confirmed',
 			'password_confirmation'=>'required|between:6,12'
 		);	
-		if(config('sximo.cnf_recaptcha') =='true') 
-		{
-			$return = $this->reCaptcha($request->all());
-			if($return !== false)
+
+		if($request->has('mobile')) {
+			unset($rules['password_confirmation']);
+			$rules['password'] = 'required|between:6,12';
+		} 
+		else {
+			if(config('sximo.cnf_recaptcha') =='true') 
 			{
-				if($return['success'] !='true')
+				$return = $this->reCaptcha($request->all());
+				if($return !== false)
 				{
-					return response()->json(['status' => $return['success'], 'message' =>'Invalid reCpatcha']);	
+					if($return['success'] !='true')
+					{
+						return response()->json(['status' => $return['success'], 'message' =>'Invalid reCpatcha']);	
+					}
+					
 				}
-				
 			}
 		}
-				
+
 		$validator = Validator::make($request->all(), $rules);
 		if ($validator->passes()) {
 			$code = rand(10000,10000000);			
@@ -102,12 +110,24 @@ class UserController extends Controller {
    			 	$message = "Thanks for registering! . Your account is active now ";         
 			
 			}	
+			if($request->has('mobile') )
+			{
+				 return response()->json(['status' => 'success', 'message' => $message ]);
+			} 
+			else {
+				return redirect('user/login')->with(['message' => $message,'status'=>'success']);
+			}
 
-
-			return redirect('user/login')->with(['message' => $message,'status'=>'success']);
 		} else {
-			return redirect('user/register')->with(['message'=>'The following errors occurred','status'=>'success'])
-			->withErrors($validator)->withInput();
+			if($request->has('mobile') )
+			{
+				 return response()->json(['status' => 'error', 'message' => $validator->errors() ]);
+			} 
+			else {
+				return redirect('user/register')->with(['message'=>'The following errors occurred','status'=>'success'])
+				->withErrors($validator)->withInput();
+			}
+			
 		}
 	}
 	
@@ -161,7 +181,7 @@ class UserController extends Controller {
 	}
 
 	public function postSignin( Request $request) {
-		
+
 		$rules = array(
 			'email'=>'required',
 			'password'=>'required',
@@ -240,11 +260,10 @@ class UserController extends Controller {
 							$session['lang'] = config('sximo.cnf_lang');
 							
 						}
-
-
-						session($session);
+						
 						if($request->ajax() == true )
 						{
+
 							if( config('sximo.cnf_front') =='false') :
 								return response()->json(['status' => 'success', 'url' => url('dashboard')]);					
 							else :
@@ -253,6 +272,7 @@ class UserController extends Controller {
 
 						} 
 						else {
+							session($session);
 							if( config('sximo.cnf_front') =='false') :
 								return redirect('dashboard');						
 							else :
@@ -290,6 +310,69 @@ class UserController extends Controller {
 
 		}	
 	}
+
+    public function postSigninMobile(  Request $request ) {
+        $rules = array(
+            'email'                 =>'required|email',
+            'password'              =>'required'
+        );  
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->passes()) {
+            $email      =  trim($request->input('email')) ;
+            $password   =  trim($request->input('password')) ;
+            if (\Auth::attempt(array('email'=> $email, 'password'=> $password ))) {
+
+                $row = User::find(\Auth::user()->id);   
+                if($row->status =='0')
+                {
+                    return response()->json(['status' => 'error', 'message' => ' Your account is active yet ' ]);
+                } 
+                else if( $row->status == '2') {
+                    return response()->json(['status' => 'error', 'message' => ' Your account is blocked / banned ' ]);
+                } 
+                else {
+                   
+                    $data = array(
+                            'gid' => $row->group_id,
+                            'uid' => $row->id,
+                            'eid' => $row->email,
+                            'll' => $row->last_login,
+                            'fid' =>  $row->name,
+                            'uname'     => $row->username ,
+                            'logged_in' => true ,
+                            'join'  =>  $row->created_at                             
+                        );
+                    if(file_exists('./uploads/users/'.$row->avatar ) && $row->avatar !='') {
+                            $data['avatar'] = asset('uploads/users/'.$row->avatar) ;
+                        } else {
+                            $data['avatar'] =  asset('uploads/users/avatar.png') ;
+                        }
+                    $data['access'] = [];
+
+                    $token =  hash('sha256',Str::random(60)) ;
+
+                    \DB::table('tb_token')->insert([
+                    	'userId'	=> $row->id ,
+                    	'token'		=> $token ,
+                    	'created'	=> date("Y-m-d H:i:s")
+                	]);
+
+                    return response()->json([
+                        'status' => 'success', 
+                        'message' => 'You are Logged',
+                        'token'=> $token,
+                        'data'   => $data
+                    ]);
+                }
+            } 
+            else {
+                return response()->json(['status' => 'error', 'message' => 'Your username/password combination was incorrect']);
+            }
+        }
+        else {
+            return response()->json(['status' => 'error', 'message' => $validator->errors() ]);
+        }
+    }
 
 	public function getProfile() {
 		

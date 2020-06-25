@@ -29,7 +29,7 @@
 								  <li data-id="{{$menu['menu_id']}}" class="dd-item dd3-item">
 									<div class="dd-handle dd3-handle"></div><div class="dd3-content">{{$menu['menu_name']}}
 										<span class="pull-right">
-										<a href="{{ url('sximo/menu/index/'.$menu['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil-alt"></i></a></span>
+										<a href="{{ url('sximo/menu/index/'.$menu['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil"></i></a></span>
 									</div>
 									@if(count($menu['childs']) > 0)
 										<ol class="dd-list" style="">
@@ -37,7 +37,7 @@
 											 <li data-id="{{$menu2['menu_id']}}" class="dd-item dd3-item">
 												<div class="dd-handle dd3-handle"></div><div class="dd3-content">{{$menu2['menu_name']}}
 													<span class="pull-right">
-													<a href="{{ url('sximo/menu/index/'.$menu2['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil-alt"></i></a></span>
+													<a href="{{ url('sximo/menu/index/'.$menu2['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil"></i></a></span>
 												</div>
 												@if(count($menu2['childs']) > 0)
 												<ol class="dd-list" style="">
@@ -45,7 +45,7 @@
 													 	<li data-id="{{$menu3['menu_id']}}" class="dd-item dd3-item">
 															<div class="dd-handle dd3-handle"></div><div class="dd3-content">{{ $menu3['menu_name'] }}
 																<span class="pull-right">
-																<a href="{{ url('sximo/menu/index/'.$menu3['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil-alt"></i></a>
+																<a href="{{ url('sximo/menu/index/'.$menu3['menu_id'].'?pos='.$active)}}"><i class="fa fa-pencil"></i></a>
 																</span>
 															</div>
 														</li>	

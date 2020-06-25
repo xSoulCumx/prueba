@@ -24,7 +24,7 @@
 
 	 {!! Form::open(array('url'=>'{class}/delete/', 'class'=>'form-horizontal' ,'id' =>'SximoTable' )) !!}
 	 <div class="table-container" style="min-height:300px;">
-    <table class="table table-hover table-bordered  ">
+    <table class="table table-hover   ">
         <thead>
 			<tr>
 				<th class="number"> No </th>			

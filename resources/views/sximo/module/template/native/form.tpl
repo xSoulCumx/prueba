@@ -3,16 +3,18 @@
 @section('content')
 <div class="page-header"><h2> {{ $pageTitle }} <small> {{ $pageNote }} </small> </h2></div>
 
-	{!! Form::open(array('url'=>'{class}?return='.$return, 'class'=>'form-{form_display} validated','files' => true )) !!}
+	{!! Form::open(array('url'=>'{class}?return='.$return, 'class'=>'form-{form_display} validated sximo-form','files' => true ,'id'=> 'FormTable' )) !!}
 	<div class="toolbar-nav">
 		<div class="row">
 			
 			<div class="col-md-6 " >
-				<button name="apply" class="tips btn btn-sm btn-default  "  title="{{ __('core.btn_back') }}" ><i class="fa  fa-check"></i> {{ __('core.sb_apply') }} </button>
-				<button name="save" class="tips btn btn-sm btn-default"  title="{{ __('core.btn_back') }}" ><i class="fa  fa-paste"></i> {{ __('core.sb_save') }} </button> 
+				<div class="submitted-button">
+					<button name="apply" class="tips btn btn-sm   "  title="{{ __('core.btn_back') }}" ><i class="fa  fa-check"></i> {{ __('core.sb_apply') }} </button>
+					<button name="save" class="tips btn btn-sm "  id="saved-button" title="{{ __('core.btn_back') }}" ><i class="fa  fa-paste"></i> {{ __('core.sb_save') }} </button> 
+				</div>	
 			</div>
 			<div class="col-md-6 text-right " >
-				<a href="{{ url($pageModule.'?return='.$return) }}" class="tips btn btn-sm "  title="{{ __('core.btn_back') }}" ><i class="fa  fa-times"></i></a> 
+				<a href="{{ url($pageModule.'?return='.$return) }}" class="tips btn   btn-sm "  title="{{ __('core.btn_back') }}" ><i class="fa  fa-times"></i></a> 
 			</div>
 		</div>
 	</div>	
@@ -26,9 +28,9 @@
 		</ul>		
 		<div class="row">
 	{form_entry}
-	{masterdetailform}
+	
 		</div>
-
+		{masterdetailform}
 		<input type="hidden" name="action_task" value="save" />
 		
 		</div>
@@ -39,7 +41,8 @@
 	$(document).ready(function() { 
 		
 		{masterdetailjs}
-		{form_javascript} 		 
+		{form_javascript} 	
+		{form_wizard} 	 
 
 		$('.removeMultiFiles').on('click',function(){
 			var removeUrl = '{{ url("{class}/removefiles?file=")}}'+$(this).attr('url');

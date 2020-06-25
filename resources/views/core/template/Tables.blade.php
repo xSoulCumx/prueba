@@ -24,7 +24,7 @@
         <h3>Table Bordered </h3>
       </div>
       <div class="content">
-        <table class="table table-bordered">
+        <table class="table ">
           <thead class="no-border">
             <tr>
               <th style="width:50%;">Task</th>
@@ -63,7 +63,7 @@
         <h3>Table Bordered Striped </h3>
       </div>
       <div class="content">
-        <table class="table table-bordered table-striped">
+        <table class="table  table-striped">
           <thead class="no-border">
             <tr>
               <th style="width:50%;">Task</th>

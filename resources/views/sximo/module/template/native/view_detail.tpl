@@ -18,7 +18,7 @@
 </div>		
 <div class="p-5">
 	<!-- Nav tabs -->
-		<ul class="nav nav-tabs" role="tablist">
+		<ul class="nav nav-tabs form-tab" role="tablist">
 			<li class="nav-item"><a href="#home" aria-controls="tab-home" role="tab" data-toggle="tab" class="nav-link active"><b>{{ $pageTitle }} : </b>  View Detail </a></li>
 		@foreach($subgrid as $sub)
 			<li class="nav-item"><a href="#{{ str_replace(" ","_",$sub['title']) }}" aria-controls="tab-{{ str_replace(" ","_",$sub['title']) }}" role="tab" data-toggle="tab" class="nav-link"><b>{{ $pageTitle }}</b>  : {{ $sub['title'] }}</a></li>
@@ -26,9 +26,9 @@
 		</ul>
 
 		<!-- Tab panes -->
-		<div class="tab-content mt-3">
+		<div class="tab-content ">
 			<div role="tabpanel" class="tab-pane active" id="home">
-			<table class="table table-striped table-bordered" >
+			<table class="table table-striped " >
 				<tbody>	
 			{form_view}
 					

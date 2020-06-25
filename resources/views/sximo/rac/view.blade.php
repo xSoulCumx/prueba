@@ -30,7 +30,7 @@
 					 			$am = explode(',',$row->modules);
 					 			
 					 		?>
-					 		<table class="table table-bordered table-striped tableapi">
+					 		<table class="table  table-striped tableapi">
 					 			<thead>
 					 				<tr>
 					 					<th>Module</th>

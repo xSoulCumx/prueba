@@ -297,8 +297,6 @@ abstract class Controller extends BaseController {
 							}
 						}	
 					}
-
-
 					
 				
 				} else {
@@ -423,16 +421,19 @@ abstract class Controller extends BaseController {
 								if(!is_null($request->file($field)))
 								{								
 
-									$file = $request->file($field); 
-								 	$destinationPath = '.'. $f['option']['path_to_upload']; 
-									$filename = $file->getClientOriginalName();
-									$extension =$file->getClientOriginalExtension(); //if you need extension of the file
-									$rand = rand(1000,100000000);
-									$newfilename = strtotime(date('Y-m-d H:i:s')).'-'.$rand.'.'.$extension;
-									$uploadSuccess = $file->move($destinationPath, $newfilename);
-									if( $uploadSuccess ) {
-									   $data[$field] = $newfilename;
-									}
+									// check if folder exists 
+									
+										$file = $request->file($field); 
+									 	$destinationPath = '.'. $f['option']['path_to_upload']; 
+										$filename = $file->getClientOriginalName();
+										$extension =$file->getClientOriginalExtension(); //if you need extension of the file
+										$rand = rand(1000,100000000);
+										$newfilename = strtotime(date('Y-m-d H:i:s')).'-'.$rand.'.'.$extension;
+										$uploadSuccess = $file->move($destinationPath, $newfilename);
+										if( $uploadSuccess ) {
+										   $data[$field] = $newfilename;
+										}
+								
 								}	 
 							}	
 
@@ -499,7 +500,7 @@ abstract class Controller extends BaseController {
 								if(!is_null($request->file($field)))
 								{
 									$file = $request->file($field); 
-								 	$destinationPath = '.'. $f['option']['path_to_upload']; 
+								 	$destinationPath = '.'. $f['option']['path_to_upload'];  
 									$filename = $file->getClientOriginalName();
 									$extension =$file->getClientOriginalExtension(); //if you need extension of the file
 									$rand = rand(1000,100000000);
@@ -874,7 +875,7 @@ abstract class Controller extends BaseController {
 	}
 
 
-function detailviewsave( $model ,$request , $detail , $id )
+	function detailviewsave( $model ,$request , $detail , $id )
 
 	{
 		//\DB::table($detail['table'])->where($detail['key'],$request[$detail['key']])->delete();
@@ -958,9 +959,9 @@ function detailviewsave( $model ,$request , $detail , $id )
 				if($i == 0){
 					$query .= " AND ( ".$form['alias'].".".$form['field']." LIKE '".$keyword."%' ) ";
 				}
-				else {
+			/* 	else {
 					$query .= " OR ( ".$form['alias'].".".$form['field']." LIKE '".$keyword."%' ) ";	
-				}
+				} */
 				$i++;
 			}
 
@@ -970,8 +971,14 @@ function detailviewsave( $model ,$request , $detail , $id )
 
 	public function grab( $request , $args = array())
 	{
+		
+		if(  isset( $request->get('profile')->group_id)) {
+			$this->access = $this->access($this->info['id'] , $request->get('profile')->group_id );
+		} else {
+			$this->access = $this->access($this->info['id']  );
+		}
+		
 
-		$this->access = $this->access($this->info['id']);
 		$sort = (!is_null($request->input('sort')) ? $request->input('sort') : $this->info['setting']['orderby']); 
 		$order = (!is_null($request->input('order')) ? $request->input('order') :  $this->info['setting']['ordertype']);
 		// End Filter sort and order for query 
@@ -1035,6 +1042,54 @@ function detailviewsave( $model ,$request , $detail , $id )
 				
 		return  $this->data;
 	}
+	public function grabApi( $request , $args = array())
+	{
+		
+		if(  isset( $request->get('profile')->group_id)) {
+			$this->access = $this->access($this->info['id'] , $request->get('profile')->group_id );
+		} else {
+			$this->access = $this->access($this->info['id']  );
+		}
+		
+
+		$sort = (!is_null($request->input('sort')) ? $request->input('sort') : $this->info['setting']['orderby']); 
+		$order = (!is_null($request->input('order')) ? $request->input('order') :  $this->info['setting']['ordertype']);
+		// End Filter sort and order for query 
+		// Filter Search for query		
+		$filter ='';	
+		$filter .= (isset($args['params']) ? $args['params'] : '');
+		if(!is_null($request->input('search')))
+		{
+			$search = 	$this->buildSearch('maps');
+			$filter = $search['param'];
+			$this->data['search_map'] = $search['maps'];
+		} 
+		if(!is_null($request->input('s')))
+		{
+			$filter .= $this->liveSearch( $request);
+		}
+
+		
+		$page = $request->input('page', 1);
+		$params = array(
+			'page'		=> $page ,
+			'limit'		=> (!is_null($request->input('rows')) ? filter_var($request->input('rows'),FILTER_VALIDATE_INT) : static::$per_page ) ,
+			'sort'		=> $sort ,
+			'order'		=> $order,
+			'params'	=> $filter,
+			'global'	=> (isset($this->access['is_global']) ? $this->access['is_global'] : 0 )
+		);
+		// Get Query 
+		$results = $this->model->getRows( $params , session('uid') );				
+		// Build pagination setting
+		$pagination = new Paginator($results['rows'], $results['total'], $params['limit']);	
+		$this->data['pagination']	= $pagination;
+		
+		$this->data['rowData']		= $results['rows'];
+				
+		return  $this->data;
+	}
+
 	public function hook( $request , $id = null  ) 
 	{
 		$this->access = $this->access($this->info['id']);
@@ -1075,9 +1130,12 @@ function detailviewsave( $model ,$request , $detail , $id )
 		
 	}
 
-	function access( $id )
+	function access( $id , $gid = null )
 	{
-		$row = \DB::table('tb_groups_access')->where('module_id', $id)->where('group_id', session('gid') )->get();
+		if($gid == null) 
+			$gid = session('gid');
+
+		$row = \DB::table('tb_groups_access')->where('module_id', $id)->where('group_id', $gid )->get();
 		
 		if(count($row) >= 1)
 		{

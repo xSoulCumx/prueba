@@ -4,10 +4,11 @@
 <div class="page-header"><h2>  {{ $pageTitle }} <small> {{ $pageNote }} </small> </h2></div>
 <div class="p-5">
 
+
    <!-- Start blast email -->
 
     {!! Form::open(array('url'=>'core/users/doblast/', 'class'=>'form-horizontal ')) !!}
-    
+   
        
                   <div class="form-group  " >
                   <label for="ipt" class=" control-label col-md-3">  </label>
@@ -21,31 +22,33 @@
                   </div> 
               
        <div class="row">
-                  <div class="col-sm-6">
-                    <div class="form-group  " >
-                  <label for="ipt" class=" control-label col-md-3">  {{ Lang::get('core.fr_emailsubject') }}   </label>
-                  <div class="col-md-9">
-                       {!! Form::text('subject',null,array('class'=>'form-control input-sm', 'placeholder'=>'','required'=>'true')) !!} 
-                   </div> 
-                  </div> 
-                  <div class="form-group  " >
-                  <label for="ipt" class=" control-label col-md-3"> {{ Lang::get('core.fr_emailsendto') }}   </label>
+                  <div class="col-sm-12">
+                          <div class="form-group  " >
+                        <label for="ipt" class=" control-label col-md-3">  {{ Lang::get('core.fr_emailsubject') }}   </label>
+                        <div class="col-md-9">
+                             {!! Form::text('subject',null,array('class'=>'form-control input-sm', 'placeholder'=>'','required'=>'true')) !!} 
+                         </div> 
+                        </div> 
+                  </div>    
+                   <div class="col-sm-6">  
+                        <div class="form-group  " >
+                        <label for="ipt" class=" control-label col-md-3"> {{ Lang::get('core.fr_emailsendto') }}   </label>
 
-                  <div class="col-md-9">
-                   @foreach($groups as $row)
-                    <div class="checkbox checkbox-success">
-                      <input type="checkbox"   name="groups[]" value="{{ $row->group_id}}" class="minimal-green" /> <label> {{ $row->name }}</label>
-                    </div>
-
-
-                   @endforeach
-                   </div> 
-                  </div>        
-              
-        </div>
+                        <div class="col-md-9">
+                         @foreach($groups as $row)
+                          <div class="checkbox checkbox-success">
+                            <input type="checkbox"   name="groups[]" value="{{ $row->group_id}}" class="minimal-green" /> <label> {{ $row->name }}</label>
+                          </div>
 
 
-        <div class="col-sm-6">
+                         @endforeach
+                         </div> 
+                        </div>        
+                    
+              </div>
+
+
+            <div class="col-sm-6">
             <div class="form-group  " >
                 <div for="ipt" class=" control-label col-md-3">  Status   </div>
                 <div class="col-md-9"> 
@@ -66,7 +69,7 @@
 
             </div>  
         </div>
-    </div>    
+     
  
  <div class="col-sm-12">
 

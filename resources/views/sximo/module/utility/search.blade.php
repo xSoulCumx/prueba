@@ -5,18 +5,18 @@
 @foreach ($tableForm as $t)
 	@if($t['search'] =='1')
 		<tr id="{{ $t['field'] }}" class="fieldsearch">
-			<td>{!! SiteHelpers::activeLang($t['label'],(isset($t['language'])? $t['language'] : array())) !!} </td>
+			<td>{{ SiteHelpers::activeLang($t['label'],(isset($t['language'])? array() : array())) }} </td>
 			<td > 
-			<select id="{{ $t['field']}}_operate" class="form-control input-sm oper" name="operate" onchange="changeOperate(this.value , '{{ $t['field']}}')">
-				<option value="equal"> = </option>
-				<option value="bigger_equal"> >= </option>
-				<option value="smaller_equal"> <= </option>
-				<option value="smaller"> < </option>
-				<option value="bigger"> > </option>
-				<option value="not_null"> ! Null  </option>
-				<option value="is_null"> Null </option>
-				<option value="between"> Between </option>
-				<option value="like"> Like </option>	
+			<select id="{{ $t['field']}}_operate" class="form-control form-control-sm oper" name="operate" onchange="changeOperate(this.value , '{{ $t['field']}}')">
+				<option value="equal"> Igual </option>
+				<option value="bigger_equal"> Mayor Igual </option>
+				<option value="smaller_equal"> Menor Igual </option>
+				<option value="smaller"> Menor </option>
+				<option value="bigger"> Mayor </option>
+				<option value="not_null"> No Vacio  </option>
+				<option value="is_null"> Vacio </option>
+				<option value="between"> Entre </option>
+				<option value="like"> Parecido </option>	
 
 			</select> 
 			</td>
@@ -28,7 +28,7 @@
 @endforeach
 		<tr>
 			<td></td>
-			<td><button type="button" name="search" class="doSearch btn btn-sm btn-primary"> Search </button></td>
+			<td><button type="button" name="search" class="doSearch btn btn-sm btn-primary text-white"> Search </button></td>
 		
 		</tr>
 	</tbody>     
@@ -47,11 +47,11 @@ function changeOperate( val , field )
 
 	} else if(val =='between') {
 	
-		html = '<input name="'+field+'" class="date form-control input-sm" placeholder="Start Date" style="width:100px;"  /> -  <input name="'+field+'_end" class="date form-control input-sm"  placeholder="End Date" style="width:100px;"    />';
+		html = '<input name="'+field+'" class="date form-control form-control-sm" placeholder="Start Date" style="width:100px;"  /> -  <input name="'+field+'_end" class="date form-control form-control-sm"  placeholder="End Date" style="width:100px;"    />';
 		$('#field_'+field+'').html(html);
 	} else {
 		//$('input[name='+field+']').removeAttr('readonly');
-		$('#field_'+field+'').html('<input type="text" value="" class="form-control input-sm" name="'+field+'">');
+		$('#field_'+field+'').html('<input type="text" value="" class="form-control form-control-sm" name="'+field+'">');
 		$('input[name='+field+']').val('');	
 		
 	}

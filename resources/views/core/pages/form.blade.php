@@ -9,7 +9,7 @@
 
 	</div>	
 
-<div class="p-5">
+<div class="p-5 ">
 
 		<ul class="parsley-error-list">
 			@foreach($errors->all() as $error)
@@ -20,17 +20,17 @@
 
 
 
-		 {!! Form::open(array('url'=>'core/pages', 'class'=>'form-vertical validated','files' => true , 'id'=>'pageForm' )) !!}			
+		 {!! Form::open(array('url'=>'cms/pages', 'class'=>'form-vertical validated','files' => true , 'id'=>'pageForm' )) !!}			
 		 <div class="row">
 			<div class="col-sm-9 ">
 	
 
-						<ul class="nav nav-tabs" >
+						<ul class="nav nav-tabs form-tab" >
 						  <li class="nav-item"><a href="#info" data-toggle="tab" class="nav-link active"> Page Content </a></li>
 						  <li class="nav-item"><a href="#meta" data-toggle="tab" class="nav-link"> Meta & Description </a></li>
 						</ul>	
 
-						<div class="tab-content">
+						<div class="tab-content bg-white">
 						  <div class="tab-pane active m-t" id="info">
 				  <div class="form-group  " >
 					<label for="ipt" > Title </label>
@@ -40,7 +40,7 @@
 				  </div> 					
 				  <div class="form-group  " >
 					<label for="ipt" class=" btn-primary  btn btn-sm">  {!! url('')!!}/  </label>						 
-						{!! Form::text('alias', $row['alias'],array('class'=>'form-control input-sm', 'placeholder'=>'', 'style'=>'width:150px; display:inline-block;'   )) !!} 
+						{!! Form::text('alias', $row['alias'],array('class'=>'form-control input-sm', 'placeholder'=>'', 'style'=>'width:150px; display:inline-block;' , 'required'=>'true'   )) !!} 
 				  </div> 
 
 							  <div class="form-group  " >
@@ -170,7 +170,7 @@
 			  <div class="form-group">
 				
 				<button type="button" id="saveBtn" class="btn btn-success " name="apply">  Save Change(s) </button>
-				<a href="{{ url('core/pages')}}" class="btn btn-info"> Cancel </a>
+				<a href="{{ url('cms/pages')}}" class="btn btn-info"> Close </a>
 				 
 		
 			  </div> 

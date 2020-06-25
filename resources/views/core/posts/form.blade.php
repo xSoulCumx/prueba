@@ -17,22 +17,33 @@
 		</ul>			
 			
 		
-		 {!! Form::open(array('url'=>'core/posts?return='.$return, 'class'=>'form-vertical validated','files' => true )) !!}
+		 {!! Form::open(array('url'=>'cms/posts?return='.$return, 'class'=>'form-vertical validated','files' => true )) !!}
 		 <div class="row">
 			<div class="col-md-9">
 
-						<ul class="nav nav-tabs mb-3" >
+						<ul class="nav nav-tabs form-tab" >
 						  <li class="nav-item"><a href="#info" data-toggle="tab" class="nav-link active"> Page Content </a></li>
 						  <li class="nav-item"><a href="#meta" data-toggle="tab" class="nav-link" > Meta & Description </a></li>
 						  <li class="nav-item"><a href="#image" data-toggle="tab" class="nav-link"> Images </a></li>
 						</ul>	
 
-					<div class="tab-content">
+					<div class="tab-content  bg-white">
 						  <div class="tab-pane active m-t" id="info">
 
 							{!! Form::hidden('pageID', $row['pageID']) !!}		
 							{!! Form::hidden('pagetype', 'post') !!}
-							{!! Form::hidden('pageID', $row['pageID']) !!}			
+							{!! Form::hidden('pageID', $row['pageID']) !!}		
+							<div class="form-group  " >
+							<label > Categories    </label>									
+							  <select class="form-control form-control-sm" name="cid">
+							  	<option value=""> -- Select Category -- </option>
+							  	@foreach($categories as $cat)
+							  		<option value="{{ $cat->cid }}" @if($cat->cid == $row['cid']) selected @endif >{{ $cat->name }}</option>
+							  	@endforeach
+
+							  </select>			
+						  </div> 
+
 									  <div class="form-group  " >
 										<label > Post Title    </label>									
 										  {!! Form::text('title', $row['title'],array('class'=>'form-control', 'placeholder'=>'',   )) !!} 						
@@ -66,8 +77,16 @@
 							<div class="tab-pane m-t" id="image">
 								<div class="form-group  " >
 									<label > Images    </label>
-									<input type="file" name="image"></input> 	
-									{!! SiteHelpers::showUploadedFile($row['image'],'/uploads/images/') !!}					
+									<div class="fileUpload btn " > 
+									    <span>  <i class="fa fa-camera"></i>  </span>
+									    <div class="title"> Browse File </div>
+									    <input type="file" name="image" class="upload"   accept="image/x-png,image/gif,image/jpeg"     />
+									</div>
+
+									
+									<div class="image-preview preview-upload">
+									{!! SiteHelpers::showUploadedFile($row['image'],'/uploads/images/posts/') !!}	
+									</div>				
 								  </div>
 
 
@@ -96,7 +115,7 @@
 									   					
 									  <div class="form-group  " >
 										<label for="ipt" class=" control-label "> Created    </label>								  
-										<div class="input-group m-b" style="width:150px !important;">
+										<div class="input-group m-b">
 											{!! Form::text('created', $row['created'],array('class'=>'form-control input-sm date', 'style'=>'width:150px !important;')) !!}
 											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 										</div>				 						
@@ -124,7 +143,15 @@
 					 						@if($row['allow_guest'] ==1 ) checked  @endif	
 										   value="1"	/> <label>Allow Guest ?  </lable>
 										   </div>
-									  </div>			
+									  </div>		
+
+									  <div class="form-group  " >
+										<label>  Set as Headline </label>
+										<div class=""><input  type='checkbox' name='headline'  class="minimal-green" 
+					 						@if($row['headline'] ==1 ) checked  @endif	
+										   value="1"	/> <label> headline   </lable>
+										   </div>
+									  </div>	
 
 
 
@@ -139,7 +166,7 @@
 					
 					<button type="submit" name="apply" class="btn btn-info btn-sm btn-flat" ><i class="icon-checkmark-circle2"></i> Apply</button>
 					<button type="submit" name="submit" class="btn btn-primary btn-sm btn-flat" ><i class="icon-bubble-check"></i> {{ Lang::get('core.sb_save') }}</button>
-					<button type="button" onclick="location.href='{{ URL::to('core/posts?return='.$return) }}' " class="btn btn-warning btn-sm btn-flat"><i class="icon-cancel-circle2 "></i>  {{ Lang::get('core.sb_cancel') }} </button>
+					<button type="button" onclick="location.href='{{ URL::to('cms/posts?return='.$return) }}' " class="btn btn-warning btn-sm btn-flat"><i class="icon-cancel-circle2 "></i>  {{ Lang::get('core.sb_cancel') }} </button>
 						
 				</div>	
 

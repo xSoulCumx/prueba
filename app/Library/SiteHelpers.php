@@ -171,78 +171,80 @@ class SiteHelpers
 		return $out;
 	}
 	
-public static function alphaID($in, $to_num = false, $pad_up = false, $passKey = null)
-{
-    $index = "abcdefghijkmnpqrstuvwxyz23456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-    if ($passKey !== null) {
-        // Although this function's purpose is to just make the
-        // ID short - and not so much secure,
-        // with this patch by Simon Franz (http://blog.snaky.org/)
-        // you can optionally supply a password to make it harder
-        // to calculate the corresponding numeric ID
- 
-        for ($n = 0; $n<strlen($index); $n++) {
-            $i[] = substr( $index,$n ,1);
-        }
- 
-        $passhash = hash('sha256',$passKey);
-        $passhash = (strlen($passhash) < strlen($index))
-            ? hash('sha512',$passKey)
-            : $passhash;
- 
-        for ($n=0; $n < strlen($index); $n++) {
-            $p[] =    substr($passhash, $n ,1);
-        }
- 
-        array_multisort($p,    SORT_DESC, $i);
-        $index = implode($i);
-    }
- 
-    $base    = strlen($index);
- 
-    if ($to_num) {
-        // Digital number    <<--    alphabet letter code
-        $in    = strrev($in);
-        $out = 0;
-        $len = strlen($in) - 1;
-        for ($t = 0; $t <= $len; $t++) {
-            $bcpow = bcpow($base, $len - $t);
-            $out     = $out + strpos($index, substr($in, $t, 1)) * $bcpow;
-        }
- 
-        if (is_numeric($pad_up)) {
-            $pad_up--;
-            if ($pad_up > 0) {
-                $out -= pow($base, $pad_up);
-            }
-        }
-        $out = sprintf('%F', $out);
-        $out = substr($out, 0, strpos($out, '.'));
-    } else {
-        // Digital number    -->>    alphabet letter code
-        if (is_numeric($pad_up)) {
-            $pad_up--;
-            if ($pad_up > 0) {
-                $in += pow($base, $pad_up);
-            }
-        }
- 
-        $out = "";
-        for ($t = floor(log($in, $base)); $t >= 0; $t--) {
-            $bcp = bcpow($base, $t);
-            $a     = floor($in / $bcp) % $base;
-            $out = $out . substr($index, $a, 1);
-            $in    = $in - ($a * $bcp);
-        }
-        $out = strrev($out); // reverse
-    }
- 
-    return $out;
-}	
+	public static function alphaID($in, $to_num = false, $pad_up = false, $passKey = null)
+	{
+		$index = "abcdefghijkmnpqrstuvwxyz23456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+		if ($passKey !== null) {
+			// Although this function's purpose is to just make the
+			// ID short - and not so much secure,
+			// with this patch by Simon Franz (http://blog.snaky.org/)
+			// you can optionally supply a password to make it harder
+			// to calculate the corresponding numeric ID
+	
+			for ($n = 0; $n<strlen($index); $n++) {
+				$i[] = substr( $index,$n ,1);
+			}
+	
+			$passhash = hash('sha256',$passKey);
+			$passhash = (strlen($passhash) < strlen($index))
+				? hash('sha512',$passKey)
+				: $passhash;
+	
+			for ($n=0; $n < strlen($index); $n++) {
+				$p[] =    substr($passhash, $n ,1);
+			}
+	
+			array_multisort($p,    SORT_DESC, $i);
+			$index = implode($i);
+		}
+	
+		$base    = strlen($index);
+	
+		if ($to_num) {
+			// Digital number    <<--    alphabet letter code
+			$in    = strrev($in);
+			$out = 0;
+			$len = strlen($in) - 1;
+			for ($t = 0; $t <= $len; $t++) {
+				$bcpow = bcpow($base, $len - $t);
+				$out     = $out + strpos($index, substr($in, $t, 1)) * $bcpow;
+			}
+	
+			if (is_numeric($pad_up)) {
+				$pad_up--;
+				if ($pad_up > 0) {
+					$out -= pow($base, $pad_up);
+				}
+			}
+			$out = sprintf('%F', $out);
+			$out = substr($out, 0, strpos($out, '.'));
+		} else {
+			// Digital number    -->>    alphabet letter code
+			if (is_numeric($pad_up)) {
+				$pad_up--;
+				if ($pad_up > 0) {
+					$in += pow($base, $pad_up);
+				}
+			}
+	
+			$out = "";
+			for ($t = floor(log($in, $base)); $t >= 0; $t--) {
+				$bcp = bcpow($base, $t);
+				$a     = floor($in / $bcp) % $base;
+				$out = $out . substr($index, $a, 1);
+				$in    = $in - ($a * $bcp);
+			}
+			$out = strrev($out); // reverse
+		}
+	
+		return $out;
+	}	
 		
 	
 	public static function toForm($forms,$layout)
 	{
+	
+
 		$f = '';
 		usort($forms,"self::_sort"); 
 		$block = $layout['column'];
@@ -265,29 +267,43 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 		}
 
 		if($format =='tab') $f .= '<div class="tab-content">';
+
+		if($format =='wizzard') $f .= '<div id="wizard-step" class="wizard-circle number-tab-steps">';
+
+
 		for($i=0;$i<$block;$i++)
 		{		
 			if($block == 4) {
 				$class = 'col-md-3';
-			}  elseif( $block ==3 ) {
-				$class = 'col-md-4';
-			}  elseif( $block ==2 ) {
-				$class = 'col-md-6';
-			} else {
-				$class = 'col-md-12';
+				}  elseif( $block ==3 ) {
+					$class = 'col-md-4';
+				}  elseif( $block ==2 ) {
+					$class = 'col-md-6';
+				} else {
+					$class = 'col-md-12';
 			}	
 			
 			$tit = (isset($title[$i]) ? $title[$i] : 'None');	
 			// Grid format 
-			if($format == 'grid')
+			if($format == 'grid'  )
 			{
-				$f .= '<div class="'.$class.'">
-						<fieldset><legend> '.$tit.'</legend>
-				';
-			} else {
-				$active = ($i==0 ? 'active' : '');
-				$f .= '<div class="tab-pane m-t '.$active.'" id="'.trim(str_replace(" ","",$tit)).'"> 
-				';			
+					$f .= '<div class="'.$class.'">
+							<fieldset><legend> '.$tit.'</legend>
+							<div class="row">
+					';
+				} else if( $format =="groupped") {
+				
+					$f .= '<div class="col-md-12">
+							<fieldset><legend> '.$tit.'</legend>
+							<div class="row">
+					';
+				} else if( $format =="wizzard") {
+
+					$f .= ' <h3>'.$tit.'</h3> <section> ';
+				} else {
+					$active = ($i==0 ? 'active' : '');
+					$f .= '<div class="tab-pane m-t '.$active.'" id="'.trim(str_replace(" ","",$tit)).'"> 
+					';			
 			}	
 			
 			
@@ -296,29 +312,31 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 			
 			foreach($forms as $form)
 			{
-				$tooltip =''; $required = ($form['required'] != '0' ? '<span class="asterix"> * </span>' : '');
+				$tooltip =''; $required = ($form['required'] != '' ? '<span class="asterix"> * </span>' : '');
 				if($form['view'] != 0)
 				{
 					if($form['field'] !='entry_by')
 					{
 						if(isset($form['option']['tooltip']) && $form['option']['tooltip'] !='') 	
 						$tooltip = '<a href="#" data-toggle="tooltip" placement="left" class="tips" title="'. $form['option']['tooltip'] .'"><i class="icon-question2"></i></a>';	
-						$hidethis = ""; if($form['type'] =='hidden') $hidethis ='hidethis';
-						$inhide = ''; if(count($group) >1) $inhide ='inhide';
+						$hidethis = ""; 
+						if($form['type'] =='hidden') $hidethis ='hidethis';
+						$inhide = ''; 
+						if(count($group) >1) $inhide ='inhide';
 						//$ebutton = ($form['type'] =='radio' || $form['option'] =='checkbox') ? "ebutton-radio" : "";
 						$show = '';
 						if($form['type'] =='hidden') $show = 'style="display:none;"';	
 						if(isset($form['limited']) && $form['limited'] !='')
 						{
-							$limited_start = 
-							'
-				<?php 
-				$limited = isset($fields[\''.$form['field'].'\'][\'limited\']) ? $fields[\''.$form['field'].'\'][\'limited\'] :\'\';
-				if(SiteHelpers::filterColumn($limited )) { ?>
+							$limited_start = '<?php 
+							$limited = isset($fields[\''.$form['field'].'\'][\'limited\']) ? $fields[\''.$form['field'].'\'][\'limited\'] :\'\';
+							if(SiteHelpers::filterColumn('.$form['limited'].' )) { ?>
 							';
-							$limited_end = '
-				<?php } ?>'; 
-						} else {
+							$limited_end = '<?php } ?>'; 
+							$limitado = 'style="display:none;"';
+							} else {
+								$limitado = 'style="display:;"';
+	
 							$limited_start = '';
 							$limited_end = ''; 
 						}
@@ -333,9 +351,10 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 								} else {
 									$f .= $limited_start;
 									$f .= '					
-									  <div class="form-group row '.$hidethis.' '.$inhide.'" '.$show .'>
-										<label for="'.$form['label'].'" class=" control-label col-md-4 text-left"> '.$form['label'].' '.$required.'</label>
-										<div class="col-md-6">
+									  <div class="form-group '.$form['columna'].''.$hidethis.' '.$inhide.'" '.$show .' '.$limitado .'>
+										<label for="'.$form['label'].'" class=" control-label col-md-12 text-left"> '.$form['label'].' '.$required.'</label>
+
+										<div class="col-md-12">
 										  '.self::formShow($form['type'],$form['field'],$form['required'],$form['option']).' 
 										 </div> 
 										 <div class="col-md-2">
@@ -353,10 +372,15 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 								} else {
 									$f .= $limited_start;
 									$f .= '					
-									  <div class="form-group '.$hidethis.' '.$inhide.'" '.$show .'>
-										<label for="ipt" class=" control-label "> '.$form['label'].'  '.$required.' '.$tooltip.' </label>									
-										  '.self::formShow($form['type'],$form['field'],$form['required'],$form['option']).' 						
-									  </div> '; 
+									<div class="form-group '.$form['columna'].''.$hidethis.' '.$inhide.'" '.$show .'>
+									<label for="'.$form['label'].'" class=" control-label col-md-12 text-left"> '.$form['label'].' '.$required.'</label>
+									<div class="col-md-12">
+									 '.self::formShow($form['type'],$form['field'],$form['required'],$form['option']).' 						
+									 </div> 
+										 <div class="col-md-2">
+										 	'.$tooltip.'
+										 </div>
+									  </div> ';
 									 $f .= $limited_end; 									
 								}
  							
@@ -367,13 +391,18 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 					
 				}					
 			}
-			if($format == 'grid') $f .='</fieldset>';
-			//if($format =='tab') $f .= '</div>';
-			$f .= '
-			</div>
-			
-			';
+			if($format == 'grid') {
+				$f .='</div></fieldset></div>';
+			} else if($format =='wizzard') {
+				$f .= '</section>';
+			} else {
+				$f .= '
+				</div>
+				
+				';
+			}
 		} 		
+		if($format =='wizzard') $f .= '</div>';
 		
 		//echo '<pre>'; print_r($f);echo '</pre>'; exit;
 		return $f;
@@ -487,7 +516,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 
 			case 'text_date';
 				$form = "
-				<div class=\"input-group input-group-sm m-b\" style=\"width:150px !important;\">
+				<div class=\"input-group input-group-sm m-b\" style=\"\">
 					{!! Form::text('{$field}', \$row['{$field}'],array('class'=>'form-control form-control-sm date')) !!}
 					<div class=\"input-group-append\">
 					 	<div class=\"input-group-text\"><i class=\"fa fa-calendar\"></i></span></div>
@@ -497,7 +526,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 				
 			case 'text_time';
 				$form = "
-						<div class=\"input-group input-group-sm m-b\" style=\"width:150px !important;\">
+						<div class=\"input-group input-group-sm m-b\" style=\"\">
 						input  type='text' name='{$field}' id='{$field}' value='{{ \$row['{$field}'] }}' 
 						{$mandatory}  {$attribute}   class='form-control form-control-sm {$extend_class}'
 						data-date-format='yyyy-mm-dd'
@@ -512,7 +541,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 			case 'text_datetime';
 				
 				$form = "
-				<div class=\"input-group input-group-sm m-b\" style=\"width:150px !important;\">
+				<div class=\"input-group input-group-sm m-b\" style=\"\">
 					{!! Form::text('{$field}', \$row['{$field}'],array('class'=>'form-control form-control-sm datetime')) !!}
 					<div class=\"input-group-append\">
 					 	<div class=\"input-group-text\"><i class=\"fa fa-calendar\"></i></span></div>
@@ -651,10 +680,11 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 				{
 					$checked = '';
 					$row =  explode(":",$opt[$i]); 
+					//El radio solo es checked si su valor es 0
 					$form .= "
 					
 					<input type='radio' name='{$field}' value ='".ltrim(rtrim($row[0]))."' {$mandatory} {$attribute}";
-					$form .= "@if(\$row['".$field."'] == '".ltrim(rtrim($row[0]))."') checked=\"checked\" @endif";
+					$form .= "@if(\$row['".$field."'] == '{$i}') checked @endif";
 					$form .= " class='minimal-green' > ".$row[1]." ";
 				}
 				break;
@@ -725,6 +755,38 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 		{
 			$limited = explode(',',$limit);	
 			if(in_array( \Session::get('uid'),$limited) )
+			{
+				return  true;
+			} else {
+				return false;	
+			}
+		} else {
+			return true;
+		}
+	}
+
+	public static function filterColumn1( $limit )
+	{
+		if($limit !='')
+		{
+			$limited = explode(',',$limit);	
+			if(in_array(Auth::id(),$limited) )
+			{
+				return  $limited;
+			} else {
+				return '';	
+			}
+		} else {
+			return '';
+		}
+	}
+
+	public static function filterColumn2( $limit )
+	{
+		if($limit !='')
+		{
+			$limited = explode(',',$limit);	
+			if(in_array(Auth::id(),$limited) )
 			{
 				return  true;
 			} else {
@@ -836,7 +898,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 				$f .= $limited_start;
 				$f .= "
 					<tr>
-						<td width='30%' class='label-view text-right'>{{ SiteHelpers::activeLang('".$grid['label']."', (isset(\$fields['".$grid['field']."']['language'])? \$fields['".$grid['field']."']['language'] : array())) }}</td>
+						<td width='30%' class='label-view text-right font-weight-bold'>{{ SiteHelpers::activeLang('".$grid['label']."', (isset(\$fields['".$grid['field']."']['language'])? \$fields['".$grid['field']."']['language'] : array())) }}</td>
 						<td>".$val." </td>
 						
 					</tr>
@@ -1162,6 +1224,27 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 		";	
 		return $pre_jCombo;
 	}	
+	public static function createWizard( )
+	{ 	
+		$wizard ='
+			$(".submitted-button").hide()
+			$("#wizard-step").steps({
+		          headerTag: "h3",
+		          bodyTag: "section",
+		          transitionEffect: "fade",
+		          titleTemplate: "<span class=\'step\'>#index#</span> #title#",
+		          autoFocus: true,
+		          labels: {
+		            finish: "Submit"
+		        },
+		        onFinished: function (event, currentIndex) {
+		          $("#saved-button").click();
+		        }
+		     });
+	       	$(".steps ul > li > a span").removeClass("number")';
+
+		return $wizard ; 
+	}
 
 	static public function showNotification()
 	{
@@ -1389,7 +1472,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 					if($val != '')
 					{
 						if(file_exists('.'.$format_value . $val))
-						$vals .= '<a href="'.url( $format_value . $val).'" target="_blank" class="previewImage"><img src="'.asset( $format_value . $val ).'" border="0" width="30" class="img-circle" style="margin-right:2px;" /></a>';
+						$vals .= '<a href="'.url( $format_value . $val).'" target="_blank" class="previewImage"><img src="'.asset( $format_value . $val ).'" border="0" width="50" class="img-circle avatar" style="margin-right:2px;" /></a>';
 					}
 				}	 
 		    $value = $vals;
@@ -1445,7 +1528,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 							$value .= $sub_val.', ';					
 
 						}
-						$value = substr($value,0,($value-2));
+						$value = substr($value,0,strlen($value)-2);
 					} 
 				}
 			}					
@@ -1972,7 +2055,7 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 
 
 		$html = '
-			<a href="'.url($module.'/create').'" class="tips btn btn-default btn-sm "  title="'.__('core.btn_create').'" '.$onclick.'>
+			<a href="'.url($module.'/create').'" class="tips btn  btn-sm btn-dark text-white py-2 "  title="'.__('core.btn_create').'" '.$onclick.'>
 			<i class="fa fa-plus  "></i> '.__('core.btn_create').'</a>
 		';
 		return $html;
@@ -1992,6 +2075,8 @@ public static function alphaID($in, $to_num = false, $pad_up = false, $passKey =
 		} else {
 			return '<span class="label label-danger"> Not Active </span>';
 		}
-	}	
+	}
+
+		
 
 }

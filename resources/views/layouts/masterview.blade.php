@@ -2,7 +2,7 @@
 	<div class="box-header with-border"><h3> Record Master :</h3></div>
 	<div class="box-body">	
 		<div class="table-responsive">
-			<table class="table table-striped table-bordered" >
+			<table class="table table-striped " >
 				<tbody>	
 				@foreach($grid as $t)
 					@if($t['view'] ==1) 

@@ -31,5 +31,12 @@ class posts extends Sximo  {
 		return " GROUP BY tb_pages.pageID ";
 	}
 	
+	 public static function categories( ) {
 
+        return $categories = \DB::table('tb_categories')
+                            ->select('tb_categories.*', \DB::raw('COUNT(pageID) AS total'))
+                            ->leftJoin('tb_pages','tb_pages.cid','tb_categories.cid')
+                            ->groupBy('tb_categories.cid')
+                            ->get();
+    }
 }

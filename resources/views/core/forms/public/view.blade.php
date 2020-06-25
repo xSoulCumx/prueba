@@ -7,7 +7,7 @@
 <div class="m-t">
 	<div class="table-responsive" > 	
 
-		<table class="table table-striped table-bordered" >
+		<table class="table table-striped " >
 			<tbody>	
 		
 			

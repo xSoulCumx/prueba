@@ -1,5 +1,5 @@
 
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover ">
         <thead>
 			<tr>
 					
@@ -68,8 +68,8 @@
                 			 @foreach ($tableGrid as $field)
 					 			@if($field['detail'] =='1')
 					 			<tr>
-					 				<td width="20%"> {{ $field['label']}} </td>
-					 				<td> : 					 
+					 				<td width="20%" class="font-weight-bold"> {{ $field['label']}} </td>
+					 				<td>  					 
 						 				{!! SiteHelpers::formatRows($row->{$field['field']},$field,$row) !!}						 
 						 			</td>
 						 		</tr>	

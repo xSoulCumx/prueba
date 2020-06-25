@@ -3,7 +3,7 @@
 use App\Http\Controllers\controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class Sximo extends Model {
 
@@ -13,7 +13,7 @@ class Sximo extends Model {
 
    }	
 
-	public static function getRows( $args , $gid = 0 )
+	public static function getRows( $args ,$id, $gid = 0 )
 	{
        $table = with(new static)->table;
 	   $key = with(new static)->primaryKey;
@@ -40,19 +40,26 @@ class Sximo extends Model {
 
 		// Update permission global / own access new ver 1.1
 		$table = with(new static)->table;
-		if($global == 0 )
-				$params .= " AND {$table}.entry_by ='".$gid."'"; 	
+		if($global == 0 ){
+				$params .= " AND {$table}.entry_by = '".$id."'"; 	
 		// End Update permission global / own access new ver 1.1			
-        
+		}else{
+			
+			//$params .= " AND {$table}.entry_by = '".$id."'";
+		}
+
 		$rows = array();
-	    $result = \DB::select( self::querySelect() . self::queryWhere(). " 
-				{$params} ". self::queryGroup() ." {$orderConditional}  {$limitConditional} ");
 		
-		$total = \DB::select( "SELECT COUNT(*) AS total FROM ".$table." " . self::queryWhere(). " 
-				{$params} ". self::queryGroup() );
+	    $result = \DB::select( self::querySelect() . self::queryWhere().  
+			$params. self::queryGroup() .$orderConditional.$limitConditional);
+		
+		$total = \DB::select( "SELECT COUNT(*) AS total FROM ".$table." " . self::queryWhere().
+			$params. self::queryGroup() );
 		$total = (count($total) != 0 ? $total[0]->total : 0 );
 
-		return $results = array('rows'=> $result , 'total' => $total);	
+		return $results = array('rows'=> $result , 'total' => $total);
+
+		
 
 
 	
@@ -89,7 +96,7 @@ class Sximo extends Model {
 		$Qnext = \DB::select( 
 			self::querySelect() . 
 			self::queryWhere().
-			" AND ".$table.".".$key." > '{$id}'  ". 
+			" AND ".$table.".".$key." > '{$id}'  ".
 			self::queryGroup().' LIMIT 1'
 		);	
 
@@ -155,7 +162,7 @@ class Sximo extends Model {
 				'gridtype'		=> (isset($data['config']['setting']['gridtype']) ? $data['config']['setting']['gridtype'] : 'native'  ),
 				'orderby'		=> (isset($data['config']['setting']['orderby']) ? $data['config']['setting']['orderby'] : $r->module_db_key),
 				'ordertype'		=> (isset($data['config']['setting']['ordertype']) ? $data['config']['setting']['ordertype'] : 'asc'  ),
-				'perpage'		=> (isset($data['config']['setting']['perpage']) ? $data['config']['setting']['perpage'] : '10'  ),
+				'perpage'		=> (isset($data['config']['setting']['perpage']) ? $data['config']['setting']['perpage'] : '50'  ),
 				'frozen'		=> (isset($data['config']['setting']['frozen']) ? $data['config']['setting']['frozen'] : 'false'  ),
 	            'form-method'   => (isset($data['config']['setting']['form-method'])  ? $data['config']['setting']['form-method'] : 'native'  ),
 	            'view-method'   => (isset($data['config']['setting']['view-method'])  ? $data['config']['setting']['view-method'] : 'native'  ),
@@ -169,6 +176,26 @@ class Sximo extends Model {
 	
 	} 
 
+	function permission( $id , $gid  )
+	{
+		$row = \DB::table('tb_groups_access')->where('module_id', $id)->where('group_id', $gid )->get();
+		
+		if(count($row) >= 1)
+		{
+			$row = $row[0];
+			if($row->access_data !='')
+			{
+				$data = json_decode($row->access_data,true);
+			} else {
+				$data = array();
+			}	
+			return $data;		
+			
+		} else {
+			return false;
+		}			
+	
+	}
     static function getComboselect( $params , $limit =null, $parent = null)
     {   
         $limit = explode(':',$limit);
@@ -314,4 +341,23 @@ class Sximo extends Model {
 
 	//public function wigets( $users )
 
+
+	public  static function updateDataRow( $table , $key , $data ,  $id = null  )
+	{
+
+	    if($id == null )
+        {
+			 $id = DB::table( $table)->insertGetId($data);				
+            
+        } else {
+            // Update here 	
+			 DB::table($table)->where($key,$id)->update($data);    
+        }    
+        return $id;    
+	}
+	public  static function deleteDataRow( $table , $key , $data  )
+	{
+
+	     DB::table($table)->whereIn($key,$data)->delete();       
+	}
 }

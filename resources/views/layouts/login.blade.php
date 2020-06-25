@@ -37,10 +37,39 @@
     
   
     </head>
-<body >
-    <div id="particles-js">
-            <canvas class="particles-js-canvas-el" ></canvas>
-          </div>
+<body style="background-color: #fff" >
+    <div class="auth-wrapper">
+        <div class="container-fluid h-100">
+            <div class="row flex-row h-100 bg-white">
+                <div class="col-xl-8 col-lg-6 col-md-5 p-0 d-md-block d-lg-block d-sm-none d-none">
+                    <div class="lavalite-bg" style="background-image: url('<?php echo asset('sximo5/images/register-bg.jpg') ;?>')">
+                        <div class="lavalite-overlay"></div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-6 col-md-7 my-auto p-0">
+
+                    <div class="login-box">
+                    
+                            <div class="text-center">
+                            @if(file_exists(public_path().'/uploads/images/'.config('sximo')['cnf_logo']) && config('sximo')['cnf_logo'] !='')
+                            <img src="{{ asset('uploads/images/'.config('sximo')['cnf_logo'])}}" alt="{{ config('sximo')['cnf_appname'] }}" width="90" />
+                            @else
+                            <img src="{{ asset('uploads/logo.png')}}" alt="{{ config('sximo')['cnf_appname'] }}" width="100" />
+                            @endif
+                                </div>
+                            <div class="p-2"><b style="text-transform:uppercase " class="mt-2"  > {{ config('sximo.cnf_appdesc') }}  </b></div>    
+
+                        @yield('content') 
+                    
+                </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>    
+<!--
     <div class="login-page">
         <div class="wrapper">
              <div class="login-box">
@@ -59,7 +88,7 @@
             </div>
         </div>    
     </div>
-<script src="{{ asset('frontend/default/js/particles.js') }}"></script>
+-->
 
 </body> 
 </html>

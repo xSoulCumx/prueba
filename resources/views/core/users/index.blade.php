@@ -10,14 +10,14 @@
 
 			<div class="toolbar-nav">
 				<div class="row">
-					<div class="col-md-6"> 	
+					<div class="col-md-8"> 	
 						@if($access['is_add'] ==1)
-						<a href="{{ url('core/users/create?return='.$return) }}" class="btn btn-default btn-sm"  
+						<a href="{{ url('core/users/create?return='.$return) }}" class="btn  btn-sm"  
 							title="{{ __('core.btn_create') }}"><i class=" fa fa-plus "></i> Create New </a>
 						@endif
 
 						<div class="btn-group">
-							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-menu5"></i> Bulk Action </button>
+							<button type="button" class="btn  btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-menu5"></i> Bulk Action </button>
 					        <ul class="dropdown-menu">
 					         @if($access['is_excel'] ==1)
 								<li class="nav-item"><a href="{{ url( $pageModule .'/export?do=excel&return='.$return) }}" class="nav-link"> Export CSV </a></li>	
@@ -36,13 +36,13 @@
 					        </ul>
 					    </div>    
 					</div>
-					<div class="col-md-6 ">
+					<div class="col-md-4 ">
 						<div class="input-group">
-						      <div class="input-group-btn">
+						      <div class="input-group-prepend">
 						        <button type="button" class="btn btn-default btn-sm " 
 						        onclick="SximoModal('{{ url($pageModule."/search") }}','Advance Search'); " ><i class="fa fa-filter"></i> Filter </button>
 						      </div><!-- /btn-group -->
-						      <input type="text" class="form-control input-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
+						      <input type="text" class="form-control form-control-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
 						    </div>
 					</div>  
 				</div>	  
@@ -55,7 +55,7 @@
  			{!! Form::open(array('url'=>'core/users?'.$return, 'class'=>'form-horizontal m-t' ,'id' =>'SximoTable' )) !!}
  			
 			
-		    <table class="table table-striped table-hover " id="{{ $pageModule }}Table">
+		    <table class="table  table-hover " id="{{ $pageModule }}Table">
 		        <thead>
 					<tr>
 						<th style="width: 3% !important;" class="number"> No </th>
@@ -90,11 +90,9 @@
 							<td>
 
 							 	<div class="dropdown">
-								  <button class="btn btn-sm dropdown-toggle" type="button" data-toggle="dropdown"> Action </button>
+								  <button class="btn btn-sm dropdown-toggle" type="button" data-toggle="dropdown"> {{ __('core.btn_action') }} </button>
 								  <ul class="dropdown-menu">
-								 	@if($access['is_detail'] ==1)
-									<li class="nav-item"><a href="{{ url('core/users/'.$row->id.'?return='.$return)}}" class="nav-link tips" title="{{ __('core.btn_view') }}"> {{ __('core.btn_view') }} </a></li>
-									@endif
+								 	
 									@if($access['is_edit'] ==1)
 									<li class="nav-item"><a  href="{{ url('core/users/'.$row->id.'/edit?return='.$return) }}" class="nav-link tips" title="{{ __('core.btn_edit') }}"> {{ __('core.btn_edit') }} </a></li>
 									@endif

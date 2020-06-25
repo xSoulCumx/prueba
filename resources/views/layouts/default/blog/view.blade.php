@@ -1,16 +1,23 @@
-<section class="page-header">
+
   <div class="container">   
-    <h2> {{ $title }}</h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item " ><a href="{{ url('') }}"> Home </a></li>
+         <li class="breadcrumb-item " ><a href="{{ url('posts') }}"> Posts </a></li>
+         <li class="breadcrumb-item " ><a href="{{ url('posts/category/'.$posts->category_alias ) }}"> {{ $posts->name }} </a></li>
+        <li class="breadcrumb-item active" aria-current="page"> {{ $title }} </li>
+      </ol>
+    </nav>
   </div>  
-</section>
+
 <section id="blog" class="section">
       <!-- Container Starts -->
-      <div class="container">  
-
-       
+      <div class="container">         
         <!-- Row Starts -->
         <div class="row">  
-            <div class="col-md-6 offset-md-3">
+            <div class="col-md-8 ">
+
+                 <h2> {{ $title }}</h2>
                 <div class="" style="margin: 0px 0 20px;">   
                 <div class="section-tool text-left ">
                     <i class="fa fa-eye "></i>  <span>  Views (<b> {{ $posts->views }} </b>)  </span>   
@@ -53,8 +60,7 @@
                     </div> 
                 </div>
                 @endforeach
-                <div class="blog-item-comments">
-                   
+                <div class="blog-item-comments">                   
                     <div class="box-avatar">
                         {!! SiteHelpers::avatar('60') !!}    
                     </div>
@@ -69,11 +75,10 @@
                         </form>
                     </div> 
                 </div>
-
-               
-
-
             </div>
+            <div class="col-md-4">
+                     @include('layouts.default.blog.widget')
+                </div>
      
          </div> 
           

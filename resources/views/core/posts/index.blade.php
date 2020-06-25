@@ -5,9 +5,9 @@
 <div class="page-header"><h2>  {{ $pageTitle }} <small> {{ $pageNote }} </small> </h2></div>
 <div class="toolbar-nav">
 <div class="row">
-				<div class="col-md-4"> 	
+				<div class="col-md-8"> 	
 					@if($access['is_add'] ==1)
-					<a href="{{ url('core/posts/create?return='.$return) }}" class="btn btn-default btn-sm"  
+					<a href="{{ url('cms/posts/create?return='.$return) }}" class="btn btn-default btn-sm"  
 						title="{{ __('core.btn_create') }}"><i class=" fa fa-plus "></i> Create New </a>
 					@endif
 
@@ -18,13 +18,13 @@
 							<li><a href="{{ url( $pageModule .'/export?do=excel&return='.$return) }}" class="nav-link"> Export CSV </a></li>	
 						@endif
 						@if($access['is_add'] ==1)
-							<li class="nav-item"><a class="nav-link" href="{{ url($pageModule .'/import?return='.$return) }}" onclick="SximoModal(this.href, 'Import CSV'); return false;"><i class="fa fa-cloud-upload"></i> Import CSV</a></li>
+							<li class="nav-item"><a class="nav-link" href="{{ url($pageModule .'/import?return='.$return) }}" onclick="SximoModal(this.href, 'Import CSV'); return false;"> Import CSV</a></li>
 							<li class="nav-item"><a class="nav-link" href="javascript://ajax" class=" copy " title="Copy" > Copy selected</a></li>
 						@endif	
 							<li class="nav-item"><a class="nav-link" href="{{ url($pageModule) }}"  > Clear Search </a></li>
 				          	<li role="separator" class="divider"></li>
 				         @if($access['is_remove'] ==1)
-							 <li class="nav-item"><a class="nav-link" href="javascript://ajax"  onclick="SximoDelete();" class="tips" title="{{ __('core.btn_remove') }}"><i class="fa fa-trash-o"></i>
+							 <li class="nav-item"><a class="nav-link" href="javascript://ajax"  onclick="SximoDelete();" class="tips" title="{{ __('core.btn_remove') }}">
 							Remove Selected </a></li>
 						@endif 
 				          
@@ -32,27 +32,27 @@
 				     </div>    
 				       
 				</div>
-				<div class="col-md-4 pull-right">
-					<div class="input-group">
-					      <div class="input-group-btn">
+				<div class="col-md-4 text-right">
+					<div class="input-group pull-right">
+					      <div class="input-group-prepend">
 					        <button type="button" class="btn btn-default btn-sm " 
 					        onclick="SximoModal('{{ url($pageModule."/search") }}','Advance Search'); " ><i class="fa fa-filter"></i> Filter </button>
 					      </div><!-- /btn-group -->
-					      <input type="text" class="form-control input-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
+					      <input type="text" class="form-control form-control-sm onsearch" data-target="{{ url($pageModule) }}" aria-label="..." placeholder=" Type And Hit Enter ">
 					    </div>
 				</div>    
 			</div>
 </div>
 
 	<div class="p-2">
-		<ul class="nav nav-tabs " >
+		<ul class="nav nav-tabs form-tab" >
 		  <li class="nav-item"><a href="#info" data-toggle="tab" class="nav-link active"> All Posts </a></li>
 		  <li class="nav-item"><a href="#config" data-toggle="tab" class="nav-link"> Post Setting </a></li>
 		</ul>
 	</div>	
 
-	<div class="tab-content" style="margin-top: 0;">
-		  <div class="tab-pane active" id="info" style="padding: 30px 0;">
+	<div class="tab-content" style="margin-top: 0; padding: 0">
+		  <div class="tab-pane active" id="info" style="padding: 0;">
 
 
 			<!-- Toolbar Top -->
@@ -60,10 +60,10 @@
 			<!-- End Toolbar Top -->
 
 			<!-- Table Grid -->
-			<div class="table-responsive" style="padding-bottom: 70px;">
- 			{!! Form::open(array('url'=>'core/posts?'.$return, 'class'=>'form-horizontal m-t' ,'id' =>'SximoTable' )) !!}
+			<div class="table-container">
+ 			{!! Form::open(array('url'=>'cms/posts?'.$return, 'class'=>'form-horizontal m-t' ,'id' =>'SximoTable' )) !!}
 			
-		    <table class="table table-striped table-hover " id="{{ $pageModule }}Table">
+		    <table class="table table-hover " id="{{ $pageModule }}Table">
 		        <thead>
 					<tr>
 						<th style="width: 3% !important;" class="number"> No </th>
@@ -98,13 +98,13 @@
 							<td>
 
 							 	<div class="dropdown">
-								  <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown"> Action </button>
+								  <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown"> {{ __('core.btn_action') }} </button>
 								  <ul class="dropdown-menu">
 								 	@if($access['is_detail'] ==1)
-									<li class="nav-item"><a href="{{ url('posts/'.$row->alias)}}" target="_blank" class="tips nav-link" title="{{ __('core.btn_view') }}"> {{ __('core.btn_view') }} </a></li>
+									<li class="nav-item"><a href="{{ url('posts/read/'.$row->alias)}}" target="_blank" class="tips nav-link" title="{{ __('core.btn_view') }}"> {{ __('core.btn_view') }} </a></li>
 									@endif
 									@if($access['is_edit'] ==1)
-									<li class="nav-item"><a  href="{{ url('core/posts/'.$row->pageID.'/edit?return='.$return) }}" class="tips nav-link" title="{{ __('core.btn_edit') }}"> {{ __('core.btn_edit') }} </a></li>
+									<li class="nav-item"><a  href="{{ url('cms/posts/'.$row->pageID.'/edit?return='.$return) }}" class="tips nav-link" title="{{ __('core.btn_edit') }}"> {{ __('core.btn_edit') }} </a></li>
 									@endif
 									<li class="divider" role="separator"></li>
 									@if($access['is_remove'] ==1)
@@ -136,19 +136,20 @@
 			<input type="hidden" name="action_task" value="" />
 			
 			{!! Form::close() !!}
-			@include('footer')
+			
 			</div>
+			@include('footer')
 			<!-- End Table Grid -->
 
 		  </div>
 
-		   <div class="tab-pane" id="config" style="padding: 30px 0;">
+		   <div class="tab-pane" id="config" style="padding: 20px ;">
 
 			<fieldset class="p-5">
 				<legend> Post Configuration </legend>
 				
 
-				{!! Form::open(array('url'=>'core/posts/config', 'class'=>'form-horizontal' ,'id' =>'' )) !!}
+				{!! Form::open(array('url'=>'cms/posts/config', 'class'=>'form-horizontal' ,'id' =>'' )) !!}
 				 <div class="form-group row  " >
 						<label class="col-md-4" > Allow Comment system    </label>
 						<div class="col-md-8">									
@@ -220,6 +221,10 @@
 		</div>
 	</div>  
 </div>	
-
+<style type="text/css">
+	.table-container {
+		    height: calc(100vh - 185px);
+	}
+</style>
 
 @stop

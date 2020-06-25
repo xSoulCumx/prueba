@@ -7,9 +7,6 @@
     <title>{{ $title }} | {{ config('sximo.cnf_appname') }}</title>
     <link rel="shortcut icon" href="{{ asset('favicon.ico')}}" type="image/x-icon">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800|Montserrat:300,400,700" rel="stylesheet">
-
     <!-- CSS Files -->
     <link href="{{ asset('sximo5/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     
@@ -48,7 +45,7 @@
               @else
               <img src="{{ asset('uploads/logo.png')}}" alt="{{ config('sximo')['cnf_appname'] }}"  width="30" />
               @endif
-               {{ config('sximo.cnf_appname') }} <sup> 6.1 </sup></h1>
+               {{ config('sximo.cnf_appname') }} </h1>
         </a>
         </h1>
       </div>

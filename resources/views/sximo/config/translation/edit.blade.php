@@ -26,7 +26,7 @@
 				</ul>
 				<hr />
 				{!! Form::open(array('url'=>'sximo/config/savetranslation/', 'class'=>'form-vertical ')) !!}
-					<table class="table table-bordered">
+					<table class="table ">
 						<thead>
 							<tr>
 								<th> Pharse </th>

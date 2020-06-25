@@ -38,7 +38,7 @@ class NotificationController extends Controller {
 			return redirect('dashboard')->with('message', __('core.note_restric'))->with('status','error');				
 		// Render into template
 		\DB::table('tb_notification')->where('userid',session('uid'))->update(['is_read'=>'1']);	
-		return view( $this->module.'.index',$this->data);
+		return view( 'user.'.$this->module.'.index',$this->data);
 	}	
 
 	function create( Request $request ) 
@@ -60,7 +60,7 @@ class NotificationController extends Controller {
 			return redirect('dashboard')->with('message',__('core.note_restric'))->with('status','error');
 		$this->data['row'] = (array) $this->data['row'];
 		$this->data['id'] = $id;
-		return view($this->module.'.form',$this->data);
+		return view('user.'.$this->module.'.form',$this->data);
 	}	
 	function show( Request $request , $id ) 
 	{
@@ -89,7 +89,7 @@ class NotificationController extends Controller {
 				if($this->access['is_detail'] ==0) 
 					return redirect('dashboard')->with('message', __('core.note_restric'))->with('status','error');
 
-				return view($this->module.'.view',$this->data);	
+				return view('user.'.$this->module.'.view',$this->data);	
 				break;		
 		}
 	}
@@ -148,7 +148,7 @@ class NotificationController extends Controller {
 			return redirect('dashboard')
 				->with('message', __('core.note_restric'))->with('status','error');
 		// delete multipe rows 
-		if(count($request->input('ids')) >=1)
+		if(is_array($request->input('ids')) )
 		{
 			$this->model->destroy($request->input('ids'));
 			

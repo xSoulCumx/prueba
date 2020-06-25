@@ -118,9 +118,15 @@ class {controller}Controller extends Controller {
 					return redirect( $this->module .'?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
 				} 
 				else {
-					return redirect($this->module.'/'. $request->input(  $this->info['key'] ).'/edit')
+					if( $request->input(  $this->info['key'] ) =='') {
+						$url = $this->module.'/create?'. $this->returnUrl();
+					} else {
+						$url = $this->module .'/'.$id.'/edit?'. $this->returnUrl();
+					}
+					return redirect( $url )
 							->with('message',__('core.note_error'))->with('status','error')
 							->withErrors($validator)->withInput();
+								
 
 				}
 				break;
@@ -156,7 +162,7 @@ class {controller}Controller extends Controller {
 			return redirect('dashboard')
 				->with('message', __('core.note_restric'))->with('status','error');
 		// delete multipe rows 
-		if(count($request->input('ids')) >=1)
+		if(is_array($request->input('ids')))
 		{
 			$this->model->destroy($request->input('ids'));
 			{masterdetaildelete}

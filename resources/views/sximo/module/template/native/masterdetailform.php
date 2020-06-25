@@ -4,13 +4,13 @@ $tpl['masterdetailmodel'] = str_replace("/","","\$this->modelview = new  \App\Mo
 $tpl['masterdetaildelete'] = '\DB::table(\''.$info['table'].'\')->whereIn(\''.$info['key'].'\',$request->input(\'ids\'))->delete();';
 $tpl['masterdetailform'] = '			
 	@if($accesschild[\'is_add\'] == \'1\' && $accesschild[\'is_edit\'] == \'1\' )
-	<hr />
-	<div class="clr clear"></div>
 	
-	<h5> '.$info['title'].' </h5>
+	
+	<fieldset>
+	<legend> '.$info['title'].' </legend>
 	
 	<div class="table-responsive">
-    <table class="table table-bordered ">
+    <table class="table  ">
         <thead>
 			<tr>
 				@foreach ($subform[\'tableGrid\'] as $t)
@@ -73,10 +73,11 @@ $tpl['masterdetailform'] = '
      </table>  
      <input type="hidden" name="enable-masterdetail" value="true">
      </div>
-	<br /><br />
+     </fieldset>
+	
      
      <a href="javascript:void(0);" class="addC btn btn-xs btn-info" rel=".clone"><i class="fa fa-plus"></i> New Item</a>
-     <hr />
+     <fieldset>
 	@endif
     ';
 

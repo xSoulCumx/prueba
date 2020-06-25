@@ -14,5 +14,16 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    //return $request->user();
+
 });
+Route::get('services/info', 'Services\SiteController@info');
+
+Route::get('services/cruds', 'Services\SiteController@cruds');
+Route::group(['middleware' => 'sximoauth'], function () {
+	Route::get('services/profile', 'Services\SiteController@profile');
+	Route::post('services/saveprofile', 'Services\SiteController@Saveprofile');
+	Route::get('services/notification', 'Services\SiteController@notification');
+	include('services.php');
+});
+

@@ -78,13 +78,15 @@ class HomeController extends Controller {
 			$this->data['note'] = $row->note;
 			if($row->template =='frontend'){
 				$page = 'layouts.'.config('sximo.cnf_theme').'.index';
+				return view( $page, $this->data);
 			}
 			else {
-				return view($page_template, $this->data);
+				
+				return view( $page_template, $this->data);
 				
 			}
 			
-			return view( $page, $this->data);			
+						
 		}
 		else {
 			$sql = \DB::table('tb_pages')->where('default','1')->get();
@@ -126,47 +128,6 @@ class HomeController extends Controller {
 		return  Redirect::back();
 	}		
 
-	public  function  postContact( Request $request)
-	{
-	
-		$this->beforeFilter('csrf', array('on'=>'post'));
-		$rules = array(
-				'name'		=>'required',
-				'subject'	=>'required',
-				'message'	=>'required|min:20',
-				'sender'	=>'required|email'			
-		);
-		$validator = Validator::make(Input::all(), $rules);	
-		if ($validator->passes()) 
-		{
-			
-			$data = array('name'=>$request->input('name'),'sender'=>$request->input('sender'),'subject'=>$request->input('subject'),'notes'=>$request->input('message')); 
-			$message = view('emails.contact', $data); 		
-			$data['to'] = $this->config['cnf_email'];			
-			if($this->config['cnf_mail'] =='swift')
-			{ 
-				Mail::send('user.emails.contact', $data, function ($message) use ($data) {
-		    		$message->to($data['to'])->subject($data['subject']);
-		    	});	
-
-			}  else {
-
-				$headers  	= 'MIME-Version: 1.0' . "\r\n";
-				$headers 	.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-				$headers 	.= 'From: '.$request->input('name').' <'.$request->input('sender').'>' . "\r\n";
-					mail($data['to'],$data['subject'], $message, $headers);		
-			}
-
-
-	
-
-			return Redirect::to($request->input('redirect'))->with('message', \SiteHelpers::alert('success','Thank You , Your message has been sent !'));	
-				
-		} else {
-			return Redirect::to($request->input('redirect'))->with('message', \SiteHelpers::alert('error','The following errors occurred'))
-			->withErrors($validator)->withInput();
-		}		
-	}	
 
 	public function submit( Request $request )
 	{
@@ -270,59 +231,66 @@ class HomeController extends Controller {
 		 return response()->json($data);	
 	}
 
-	public function posts( Request $request , $read = '') 
+	public function posts( Request $request ,  $category = '') 
 	{
+
 		$posts = \DB::table('tb_pages')
-					->select('tb_pages.*','tb_users.username',\DB::raw('COUNT(commentID) AS comments'))
-					->leftJoin('tb_users','tb_users.id','tb_pages.userid')
-					->leftJoin('tb_comments','tb_comments.pageID','tb_pages.pageID')					
-					->where('pagetype','post');
+				->select('tb_pages.*','tb_users.username',\DB::raw('COUNT(commentID) AS comments'))
+				->leftJoin('tb_users','tb_users.id','tb_pages.userid')
+				->leftJoin('tb_comments','tb_comments.pageID','tb_pages.pageID')		
+				->leftJoin('tb_categories','tb_categories.cid','tb_pages.cid')					
+				->where('pagetype','post');
+					/*
 					if(!is_null($request->input('label'))){
 						$keyword = trim($request->input('label'));
 						$posts = $posts->where('labels', 'LIKE' , "%{$keyword}%%" ); 	
 					}
+					*/
+	
+				if( $category !=''  ) {
+					$mode = 'category';
+					$this->data['categoryDetail'] = Post::categoryDetail( $category );
+					$posts = $posts->where('tb_categories.alias',$category )->paginate(10);					
+				}
+				else {
+					$mode = 'all';
 
-					if($read !='') {
-						$posts = $posts->where('alias',$read )->get(); 
-					} 
-		else {
-
-			$posts = $posts->groupBy('tb_pages.pageID')->paginate(12);
-		}					
+					$posts = $posts->groupBy('tb_pages.pageID')->paginate(10);
+				}					
 
 		$this->data['title']		= 'Post Articles';
 		$this->data['posts']		= $posts;
 		$this->data['pages']		= 'secure.posts.posts';
-		base_path().'/resources/views/layouts/'.config('sximo.cnf_theme').'/blog/index.blade.php';
+		$this->data['popular']		= Post::lists('popular');
+		$this->data['headline']		= Post::lists('headline');
+		$this->data['categories']		= Post::categories();
+		$this->data['mode']			= $mode;
 
-		if(file_exists(base_path().'/resources/views/layouts/'.config('sximo.cnf_theme').'/blog/index.blade.php'))
-		{
-			$this->data['pages'] = 'layouts.'.config('sximo.cnf_theme').'.blog.index';
-		}	
 
-		if($read !=''){
-			if(file_exists(base_path().'/resources/views/layouts/'.config('sximo.cnf_theme').'/blog/view.blade.php'))
-			{
-				if(count($posts))
-				{
-					$this->data['posts'] = $posts[0];
-					$this->data['comments']	= \DB::table('tb_comments')
-												->select('tb_comments.*','username','avatar','email')
-												->leftJoin('tb_users','tb_users.id','tb_comments.UserID')
-												->where('PageID',$this->data['posts']->pageID)
-												->get();
-					\DB::table('tb_pages')->where('pageID',$this->data['posts']->pageID)->update(array('views'=> \DB::raw('views+1')));						
-				} else {
-					return redirect('posts');
-				}	
-				$this->data['title']		= $this->data['posts']->title;
-				$this->data['pages'] = 'layouts.'.config('sximo.cnf_theme').'.blog.view';
-
-			}	
-		}	
+		$this->data['pages'] = 'layouts.'.config('sximo.cnf_theme').'.blog.index';	
 		$page = 'layouts.'.config('sximo.cnf_theme').'.index';
 		return view( $page , $this->data);	
 	}
+
+	public function read( Request $request , $read = '')  {
+
+		$row = Post::read( $read );
+	//	print_r($posts);exit;
+		$comments = Post::comments( $row->pageID );
+		$data = [
+			'title'	=> $row->title ,
+			'posts'	=> $row ,
+			'comments'	=>  $comments ,
+			'pages' => 'layouts.'.config('sximo.cnf_theme').'.blog.view',
+			'popular'	=> Post::lists('popular') , 
+			'categories'	=> Post::categories()
+		];
+		$page = 'layouts.'.config('sximo.cnf_theme').'.index';
+		return view( $page , $data);	
+
+	}
+
+
 
 	public function comment( Request $request)
 	{
@@ -340,7 +308,7 @@ class HomeController extends Controller {
 				);
 
 			\DB::table('tb_comments')->insert($data);
-			return redirect('posts/'.$request->input('alias'))
+			return redirect('posts/read/'.$request->input('alias'))
         		->with(['message'=>'Thank You , Your comment has been sent !','status'=>'success']);
 		} else {
 			return redirect('posts/'.$request->input('alias'))
@@ -353,11 +321,11 @@ class HomeController extends Controller {
 		if($commentID !='')
 		{
 			\DB::table('tb_comments')->where('commentID',$commentID)->delete();
-			return redirect('posts/'.$alias)
+			return redirect('posts/read/'.$alias)
 				->with(['message'=>'Comment has been deleted !','status'=>'success']);
        
 		} else {
-			return redirect('posts/'.$alias)
+			return redirect('posts/post/'.$alias)
 				->with(['message'=>'Failed to remove comment !','status'=>'error']);
 		}
 	}

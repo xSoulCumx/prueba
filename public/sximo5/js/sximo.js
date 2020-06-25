@@ -7,40 +7,63 @@ $(window).on('load', function() {
 
 
 jQuery(document).ready(function($){
+
+	var body = $('body');
+	body.addClass($.cookie("minimize"));
+	body.addClass($.cookie("sx-theme"));
+	console.log( $.cookie("minimize") );
+  
+
 	$('.toggleMenu').click(function () {
-      	var w = $("#app");
-	//	w.toggleClass("close-sidemenu");
-			
-		if( w.hasClass('toggled'))
-		{
-			w.removeClass('toggled');
-			$.cookie("sidebar",' ', {expires: 365, path: '/'});
 
+		var body = $('body');
+		if(screen.width > 768) {
+			if(body.hasClass('minimize')) {
+				body.removeClass('minimize');
+				$.cookie("minimize",' ', {expires: 365, path: '/'});
+				
+			} else {
+				body.addClass('minimize');
+				$.cookie("minimize",'minimize', {expires: 365, path: '/'});
+			}
 		} else {
-			w.addClass('toggled');
-			$.cookie("sidebar",'toggled', {expires: 365, path: '/'});	
-		}		
+			$('.page-wrapper .sidebar').css('left','0');
+			$('.sidebar-compact').css('left','0');
+			$('.overlay').show();
+		}	
 
-		 console.log( $.cookie("sidebar") );
+      	var w = $("#app");
+
     })
+    $('.overlay').click(function(){
+    	$('.page-wrapper .sidebar').css('left','-320px');
+		$('.sidebar-compact').css('left','-70px');
+		$(this).hide()
 
+    });
 
-	$("#side-nav").addClass($.cookie("side-nav-color"));
-	$(".page-header").addClass($.cookie("header-nav-color"));
-	$(".sidebar-header").addClass($.cookie("header-nav-color"));  
+    $('.navigation').mouseover(function(){
+    	var body = $('body');
+    	if(body.hasClass('minimize')) {
+    		$('.page-wrapper .sidebar').css('left','0');
+    	} else {
+    		//$('.page-wrapper .sidebar').css('left','-320px');
+    	}
 
-	if( $("#side-nav").hasClass('darken-2') ||  $("#side-nav").hasClass('darken-3') ||  $("#side-nav").hasClass('darken-4') ||  $("#side-nav").hasClass('darken-1') ) {
-		$(".sidebar-compact ul li a i").css('color','#fff');
-	}
-	if( $(".page-header").hasClass('darken-2') ||  $(".page-header").hasClass('darken-3') ||  $(".page-header").hasClass('darken-4') ||  $(".page-header").hasClass('darken-1') ) {
-		$(".page-header , a.toggleMenu  ").css('color','#fff');
-	}
-	if( $(".sidebar-header").hasClass('darken-2') ||  $(".sidebar-header").hasClass('darken-3') ||  $(".sidebar-header").hasClass('darken-4') ||  $(".sidebar-header").hasClass('darken-1') ) {
-		$(".sidebar-header a  ").css('color','#fff !important');
-	}
+    }).mouseleave(function() {
+    	var body = $('body');
+    	if(body.hasClass('minimize')) {
+    		 $('.page-wrapper .sidebar').css('left','-320px');
+    	} else {
+    		 $('.page-wrapper .sidebar').css('left','0');
+    	}
+    		
+    	
+    });
+    if(screen.width > 768) {
+    	$('.overlay').hide();
+    }
 
-	$("#app").addClass( $.cookie("sidebar") );
-	
 	$('.sidebar-compact ul li a').hover(function(){
 		var w = $("#app");
 		if( w.hasClass('toggled')) {
@@ -48,15 +71,32 @@ jQuery(document).ready(function($){
 		} 			
 	})
 
+	$('ul.themeable li a').click(function() {
+		var color =  $(this).attr('code');
+		$('body').addClass(color)
+		$.cookie("sx-theme", color, {expires: 365, path: '/'});
+		window.location.reload()
+	})
+
 	$(window).bind("load resize",function(){
 		var w = $("body");
-		if( w.hasClass('ls-closed'))
-		{
-			$('body').removeClass('close-sidemenu')
-		
+		if(screen.width > 768) {
+
+			if(body.hasClass('minimize')) {
+				$('.page-wrapper .sidebar').css('left','-320px');
+				$('.sidebar-compact').css('left','0px');
+			} else {
+				$('.page-wrapper .sidebar').css('left','0');
+				$('.sidebar-compact').css('left','0');
+			}
+			$('.overlay').hide()
+
 		} else {
-			$("body").addClass( $.cookie("sximo-sidebar") );
-		}
+
+			$('.page-wrapper .sidebar').css('left','-320px');
+				$('.sidebar-compact').css('left','-70px');
+
+		}	
 
 	})
 
@@ -127,13 +167,14 @@ jQuery(document).ready(function($){
 		var id = $(this).attr('name');
 
 		var files = $(this).prop('files');
-		$(this).parent().closest('.title').html(files[0].name)
+		$(this).parent().closest('.fileUpload .title').html(files[0].name)
 		console.log(files[0].name)
 		const fr = new FileReader()
 		fr.readAsDataURL(files[0])
 		fr.addEventListener('load', () => {
 		 	$('.'+id+'-preview').html('<img src="'+fr.result+'" width="120" />')
 		}) 
+		console.log(e)
  		
 	  	
 	})

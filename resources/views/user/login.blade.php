@@ -28,20 +28,24 @@
 	
 
 		
-		<div   id="tab-sign-in">
+		<div  class="authentication-form">
 
 
 
 
 	 		{!! Form::open(array('url'=>'user/signin', 'class'=>'','id'=>'LoginAjax' , 'parsley-validate'=>'','novalidate'=>' ')) !!}
 
-	 		<label for="inputEmail" class="sr-only">Email address</label>
-	      	<input type="email" id="inputEmail" class="form-control"  name="email"  placeholder="{{ __('core.email') }}" required autofocus>
-	      	<label for="inputPassword" class="sr-only">Password</label>
-	      	<input type="password" id="inputPassword"  name="password" class="form-control" placeholder="{{ __('core.password') }}" required>
+	 		<div class="form-group">
+                <input type="email" id="inputEmail" class="form-control"  name="email"  placeholder="{{ __('core.email') }}" required autofocus>
+                <i class="fa fa-user"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" id="inputPassword"  name="password" class="form-control" placeholder="{{ __('core.password') }}" required>
+                <i class="fa fa-key"></i>
+            </div>
 	      	<div class="checkbox pt-3 mb-3">
 		        <label>
-		          <input type="checkbox" name="remember" value="1"  style="display: inline-block;" /> Remember me
+		          <input type="checkbox" class="minimal-green" name="remember" value="1"  style="display: inline-block;" /> Remember me
 		        </label>
 		      </div>
 
@@ -49,14 +53,13 @@
 			@if(config('sximo.cnf_recaptcha') =='true') 
 			<div class="form-group has-feedback  animated fadeInLeft delayp1">
 				<label class="text-left"> Are u human ? </label>	
-				<div class="g-recaptcha" data-sitekey="6Le2bjQUAAAAABascn2t0WsRjZbmL6EnxFJUU1H_"></div>
-				
+				<div class="g-recaptcha" data-sitekey="6Le2bjQUAAAAABascn2t0WsRjZbmL6EnxFJUU1H_"></div>				
 				<div class="clr"></div>
 			</div>	
 		 	@endif	
-
-		 	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> 	
-
+		 	<div class="text-center">
+			 	<button class="btn btn-lg btn-primary" type="submit">Sign in</button> 	
+			</div> 	
 
 
 
@@ -89,7 +92,7 @@
 				</div>	
 
 			  <p style="padding:5px 0" class="text-center">
-			  <a href="{{ url('')}}"> {{ Lang::get('core.backtosite') }} </a>  
+			  <a href="{{ url('')}}"> {{ Lang::get('core.backtosite') }} </a> <br> C  O  D  E  L  I  S  T  .  C  C 
 		   		</p>
 		   	</div>	
 		   </form>			

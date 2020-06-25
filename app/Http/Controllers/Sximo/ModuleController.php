@@ -190,7 +190,10 @@ class ModuleController extends Controller {
                 'is_add'        => 'Add ',
                 'is_edit'        => 'Edit ',
                 'is_remove'        => 'Remove ',
-                'is_excel'        => 'Excel ',    
+                'is_excel'        => 'Excel ',   
+                'is_csv' =>         'CSV ', 
+                'is_pdf' =>     'PDF', 
+                'is_print' => 'Print' 
                 
             );                    
             $groups = \DB::table('tb_groups')->get();
@@ -261,6 +264,9 @@ class ModuleController extends Controller {
                 
                 if(file_exists(  app_path()."/Http/Controllers/{$class}Controller.php")) 
                     unlink( app_path()."/Http/Controllers/{$class}Controller.php");
+
+                 if(file_exists(  app_path()."/Http/Controllers/Services/{$class}Controller.php")) 
+                    unlink( app_path()."/Http/Controllers/Services/{$class}Controller.php");
                     
                 if(file_exists( app_path()."/Models/{$class}.php")) 
                     unlink( app_path()."/Models/{$class}.php");
@@ -319,7 +325,7 @@ class ModuleController extends Controller {
             'gridtype'        => (isset($config['setting']) ? $config['setting']['gridtype'] : 'native'  ),
             'orderby'        => (isset($config['setting']) ? $config['setting']['orderby'] : $row->module_db_key  ),
             'ordertype'        => (isset($config['setting']) ? $config['setting']['ordertype'] : 'asc'  ),
-            'perpage'        => (isset($config['setting']) ? $config['setting']['perpage'] : '10'  ),
+            'perpage'        => (isset($config['setting']) ? $config['setting']['perpage'] : '50'  ),
             'frozen'        => (isset($config['setting']['frozen'])  ? $config['setting']['frozen'] : 'false'  ),
             'form-method'        => (isset($config['setting']['form-method'])  ? $config['setting']['form-method'] : 'native'  ),
             'view-method'        => (isset($config['setting']['view-method'])  ? $config['setting']['view-method'] : 'native'  ),
@@ -651,6 +657,7 @@ class ModuleController extends Controller {
                 'size'            => '0',
                 'edit'            => 1,
                 'search'        => (isset($search[$i]) ? $search[$i] : 0 ),
+                'columna'        => (isset($columna[$i]) ? $columna[$i] : "col-md-1" ),
                 "sortlist"         => $sortlist[$i] ,
                 'limited'    => (isset($limited[$i]) ? $limited[$i] : ''),
                 'option'        => array(
@@ -733,6 +740,7 @@ class ModuleController extends Controller {
                     'size'            => $size,
                     'edit'            => $form['edit'],
                     'search'        => $form['search'],
+                    'columna'   => $form['columna'],
                     "sortlist"         => $form['sortlist'] ,
                     'limited'           => isset($form['limited']) ? $form['limited'] : '',
                     'option'        => array(
@@ -786,7 +794,7 @@ class ModuleController extends Controller {
         return view('sximo.module.field',$this->data);
     } 
 
-   function postSaveformfield( Request $request)
+    function postSaveformfield( Request $request)
     {
 
     
@@ -838,6 +846,7 @@ class ModuleController extends Controller {
             'add'            => 1,
             'edit'            => 1,
             'search'        => $request->input('search'),
+            'columna'        => $request->input('columna'),
             'size'            =>     '',
             'sortlist'        => $request->input('sortlist'),
             'limited'           => $request->input('limited'),
@@ -964,7 +973,7 @@ class ModuleController extends Controller {
 
     }        
 
-   function getPermission( $id )
+    function getPermission( $id )
     {
 
         $row = \DB::table('tb_module')->where('module_name', $id)
@@ -1130,6 +1139,7 @@ class ModuleController extends Controller {
         $this->data['module'] = 'module';
         $this->data['form_column'] = (isset($config['form_column']) ? $config['form_column'] : 1 );    
         if(!is_null($request->input('block')))     $this->data['form_column'] = $request->input('block');
+       // echo '<pre>'; print_r($config); echo '</pre>';  exit;
         
         if(!isset($config['form_layout']))
         {
@@ -1198,6 +1208,7 @@ class ModuleController extends Controller {
             'display' => $request->input('display')
             
         );
+       // print_r($config['form_layout']); exit;
         
       
         unset($config["forms"]);
@@ -1441,7 +1452,7 @@ class ModuleController extends Controller {
 
     }       
 
-   function configGrid ( $field , $alias , $type, $sort ) {
+    function configGrid ( $field , $alias , $type, $sort ) {
         $grid = array ( 
             "field"     => $field,
             "alias"     => $alias,
@@ -1485,7 +1496,7 @@ class ModuleController extends Controller {
             'add'            => '1',
             'edit'            => '1',
             'search'        => '1',
-
+            'columna'        => 'col-md-1',
             'size'            => 'span12',
             "sortlist"     => $sort ,
             'form_group'    => '',
@@ -1622,13 +1633,19 @@ class ModuleController extends Controller {
                 'sql_where'                    => $config['sql_where'],
                 'sql_group'                    => $config['sql_group'],
             );                                        
-            if(!isset($config['form_layout'])) 
+            if(!isset($config['form_layout'])) {
                 $config['form_layout'] = array('column'=>1,'title'=>$row->module_title,'format'=>'grid','display'=>'horizontal');
+            }
                 
             $codes['form_javascript'] = \SiteHelpers::toJavascript($config['forms'],$path,$class);
             $codes['form_entry'] = \SiteHelpers::toForm($config['forms'],$config['form_layout']);
             $codes['form_display'] = (isset($config['form_layout']['display']) ? $config['form_layout']['display'] : 'horizontal');
             $codes['form_view'] = \SiteHelpers::toView($config['grid']);
+            if($config['form_layout']['format'] =='wizzard') {
+                 $codes['form_wizard'] = \SiteHelpers::createWizard();
+            } else {
+                $codes['form_wizard'] = '';
+            }
            // $codes['form_maps'] = \SiteHelpers::toMaps($config['grid']);
 
             $codes['masterdetailmodel']  = '';
@@ -1659,6 +1676,7 @@ class ModuleController extends Controller {
             $dir = base_path().'/resources/views/'.$class; 
             $dirPublic = base_path().'/resources/views/'.$class.'/public'; 
             $dirC = app_path().'/Http/Controllers/';
+            $dirApi = app_path().'/Http/Controllers/Services/';
             $dirM = app_path().'/Models/';
             
             if(!is_dir($dir))               mkdir( $dir,0777 );  
@@ -1732,6 +1750,8 @@ class ModuleController extends Controller {
     {
         $rows = \DB::table('tb_module')->where('module_type','!=','core')->get();
         $val  =    "<?php
+        ";
+        $val_api  = "<?php
         "; 
        foreach($rows as $row)
         {
@@ -1740,14 +1760,19 @@ class ModuleController extends Controller {
 
            $mType = ( $row->module_type =='addon' ? 'native' :  $row->module_type);
            include(base_path().'/resources/views/sximo/module/template/'.$mType.'/config/route.php' );
+           include(base_path().'/resources/views/sximo/module/template/'.$mType.'/config/route_api.php' );
             
   
         }
         $val .=     "?>";
-         $filename = base_path().'/routes/module.php';
+        $val_api .=     "?>";
+        $filename = base_path().'/routes/module.php';
         $fp=fopen($filename,"w+"); 
         fwrite($fp,$val); 
         fclose($fp);    
+
+        file_put_contents( base_path()."/routes/services.php" , $val_api) ;
+
         return true;    
         
     }    
@@ -1894,106 +1919,106 @@ class ModuleController extends Controller {
           $cf_zip->add_data( "app/Models/". ucwords($file).".php", file_get_contents($app_path."/Models/". ucwords($file).".php")) ;
           $cf_zip->get_files_from_folder( "../resources/views/{$file}/","resources/views/{$file}/" ); 
 
-    } 
+        } 
 
-    // CHANGE START 
+       // CHANGE START 
     
-    // push library files
-    if( ! empty( $file_library )){
-      foreach ( $file_library as $k => $file ){
-        $cf_zip->add_data( "app/Library/". $file , 
-                             file_get_contents( $app_path."/Library/".$file)) ; 
-      }
-    }
-    
-    // push language files
-    
-    if( ! empty ( $file_lang )){
-      $lang_path = scandir( base_path() . '/resources/lang/' );
-      foreach ( $lang_path as $k => $path ){
-        if( $path=='.' || $path=='..') continue;
-        if( is_file( $app_path . '/' . $path )) continue;
-          
-        foreach ( $file_lang as $k => $file ){
-          $cf_zip->add_data( 'resources/lang/'. $path .'/'. $file , 
-                   file_get_contents( base_path()."/resources/lang/". $path . '/'. $file)) ; 
-          
-        }  
-      }
-      $this->data['lang_path'] = $lang_path;
-    
-    }
-    
-    
-    // CHANGE END 
-    
-    $_zip = $cf_zip->archive( $zip_file ); 
-    
-    $cf_zip->clear_data(); 
-     
-    $this->data['download_link'] = link_to("uploads/zip/{$app_name}.zip","download here",array('target'=>'_new')); 
-     
-    $this->data['module_title'] = "ZIP Packager"; 
-    $this->data['app_name'] = $app_name;
-
-    return redirect( 'sximo/module' )
-        ->with('message', ' Module(s) zipped successful ! ')->with('status','success');
-
-    
-  }
-  
-  function postInstall( Request $request ,$id =0)
-  {
-
-    $rules = array(
-          'installer'    => 'required'
-    );
-    
-    $validator = Validator::make($request->all(), $rules);  
-    if ($validator->passes()) {
-      
-      $path = $_FILES['installer']['tmp_name'];
-      $data = \SximoHelpers::cf_unpackage($path);
-      
-      $msg = '.';
-      if( isset($data['sql_error'])){
-        $msg = ", with SQL error ". $data['sql_error'];
-      }
-      
-      self::createRouters();
-      
-          return redirect('sximo/module')->with('message','Module Installed' . $msg)->with('status','success');
-    }  else  {
-         return redirect('sximo/module')->with('message','Please select file to upload !')->with('status','error');
-    } 
-  
-  }  
-
-
-  function getSubform( Request $request ,$id =0)
-  {
-
-               
-        $row = \DB::table('tb_module')->where('module_name', $id)
-                                ->get();
-        if(count($row) <= 0){
-             return redirect('sximo/module')->with('message','Can not find module')->with('status','error');        
+        // push library files
+        if( ! empty( $file_library )){
+            foreach ( $file_library as $k => $file ){
+                $cf_zip->add_data( "app/Library/". $file , 
+                                    file_get_contents( $app_path."/Library/".$file)) ; 
+            }
         }
-        $row = $row[0];    
-        $config = \SiteHelpers::CF_decode_json($row->module_config); 
-        $this->data['row'] = $row;
-        $this->data['fields'] = $config['grid'];
-        $this->data['subform'] = (isset($config['subform']) ? $config['subform'] : array());
-      //  print_r($this->data['subform']);
-        $this->data['tables'] = Module::getTableList($this->db);
-        $this->data['module'] = $row->module_name;
-        $this->data['module_name'] = $id;    
-        $this->data['type']           = $row->module_type;
-        $this->data['modules'] = Module::all();    
-       
+    
+       // push language files
+    
+        if( ! empty ( $file_lang )){
+            $lang_path = scandir( base_path() . '/resources/lang/' );
+            foreach ( $lang_path as $k => $path ){
+                if( $path=='.' || $path=='..') continue;
+                if( is_file( $app_path . '/' . $path )) continue;
+                
+                foreach ( $file_lang as $k => $file ){
+                $cf_zip->add_data( 'resources/lang/'. $path .'/'. $file , 
+                        file_get_contents( base_path()."/resources/lang/". $path . '/'. $file)) ; 
+                
+                }  
+            }
+            $this->data['lang_path'] = $lang_path;
+        
+        }
+    
+    
+            // CHANGE END 
+        
+        $_zip = $cf_zip->archive( $zip_file ); 
+        
+        $cf_zip->clear_data(); 
+        
+        $this->data['download_link'] = link_to("uploads/zip/{$app_name}.zip","download here",array('target'=>'_new')); 
+        
+        $this->data['module_title'] = "ZIP Packager"; 
+        $this->data['app_name'] = $app_name;
 
-        return view('sximo.module.subform',$this->data);  
-  }
+        return redirect( 'sximo/module' )
+            ->with('message', ' Module(s) zipped successful ! ')->with('status','success');
+
+    
+    }
+  
+    function postInstall( Request $request ,$id =0)
+    {
+
+        $rules = array(
+            'installer'    => 'required'
+        );
+        
+        $validator = Validator::make($request->all(), $rules);  
+        if ($validator->passes()) {
+        
+        $path = $_FILES['installer']['tmp_name'];
+        $data = \SximoHelpers::cf_unpackage($path);
+        
+        $msg = '.';
+        if( isset($data['sql_error'])){
+            $msg = ", with SQL error ". $data['sql_error'];
+        }
+        
+        self::createRouters();
+        
+            return redirect('sximo/module')->with('message','Module Installed' . $msg)->with('status','success');
+        }  else  {
+            return redirect('sximo/module')->with('message','Please select file to upload !')->with('status','error');
+        } 
+    
+    }  
+
+
+    function getSubform( Request $request ,$id =0)
+    {
+
+                
+            $row = \DB::table('tb_module')->where('module_name', $id)
+                                    ->get();
+            if(count($row) <= 0){
+                return redirect('sximo/module')->with('message','Can not find module')->with('status','error');        
+            }
+            $row = $row[0];    
+            $config = \SiteHelpers::CF_decode_json($row->module_config); 
+            $this->data['row'] = $row;
+            $this->data['fields'] = $config['grid'];
+            $this->data['subform'] = (isset($config['subform']) ? $config['subform'] : array());
+        //  print_r($this->data['subform']);
+            $this->data['tables'] = Module::getTableList($this->db);
+            $this->data['module'] = $row->module_name;
+            $this->data['module_name'] = $id;    
+            $this->data['type']           = $row->module_type;
+            $this->data['modules'] = Module::all();    
+        
+
+            return view('sximo.module.subform',$this->data);  
+    }
 
    function postSavesubform( Request $request)
     {
@@ -2202,7 +2227,7 @@ class ModuleController extends Controller {
 
         $config = \SiteHelpers::CF_decode_json($row->module_config,true);  
        
-//       echo '<pre>'; print_r($config); echo '</pre>'; 
+      //       echo '<pre>'; print_r($config); echo '</pre>'; 
 
         $this->data['tables']     = $config['grid']; 
         $this->data['type']     = $row->module_type;        

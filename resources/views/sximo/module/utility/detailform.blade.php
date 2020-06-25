@@ -3,7 +3,7 @@
 
  <div class="table-responsive">
  @if(count($rowData)>=1)
-    <table class="table table-bordered  " id="{{ $pageModule }}Table">
+    <table class="table   " id="{{ $pageModule }}Table">
         <thead>
 			<tr>
 				<th> No </th>				

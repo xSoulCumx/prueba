@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="sbox-content">
-		<table class="table table-striped table-bordered" >
+		<table class="table table-striped " >
 			<tbody>	
 		
 					<tr>

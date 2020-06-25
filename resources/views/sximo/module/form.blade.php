@@ -12,7 +12,12 @@
 	<li class="nav-item"><a class="nav-link" href="{{ URL::to('sximo/module/formdesign/'.$module_name)}}">Form Layout</a></li> 
 	
 </ul>
-
+ <div class="infobox infobox-danger ">
+  <button type="button" class="close" data-dismiss="alert"> x </button>  
+  <p> <strong>Note !</strong> Your primary key must be <strong>show</strong> and in <strong>hidden</strong> type   <br />
+  	All Validatios rule are from laravel rule <a href="https://laravel.com/docs/6.x/validation#available-validation-rules" target="_blank"> Availabe rules </a>
+  </p>	
+</div>	
 
  {!! Form::open(array('url'=>'sximo/module/saveform/'.$module_name, 'class'=>'form-horizontal','id'=>'fForm')) !!}
  <div class="table-responsive">
@@ -27,7 +32,8 @@
 			<th scope="col" data-hide="phone">Type </th>
             <th scope="col" data-hide="phone">Show</th>
             
-            <th scope="col" data-hide="phone">Searchable</th>
+						<th scope="col" data-hide="phone">Searchable</th>
+						<th scope="col" data-hide="phone">Column</th>
 			<th scope="col" data-hide="phone">Validation</th>
             <th scope="col">&nbsp;</th>
           </tr>
@@ -89,9 +95,29 @@
 			</label>
 			</td>
 			<td>
-				<input type="text" name="required[<?php echo $id;?>]" class="form-control input-sm" value="{{ $rows['required'] }}" placeholder="Ex : require|email" />
+
+					<select name="columna[<?php echo $id;?>]" class="form-control form-control-sm">
+								<option <?php if ($rows['columna'] == "col-md-1" ) echo 'selected' ; ?> value="col-md-1"> 1</option>
+								<option <?php if ($rows['columna'] == "col-md-2" ) echo 'selected' ; ?> value="col-md-2"> 2</option>
+								<option <?php if ($rows['columna'] == "col-md-3" ) echo 'selected' ; ?> value="col-md-3"> 3</option>
+								<option <?php if ($rows['columna'] == "col-md-4" ) echo 'selected' ; ?> value="col-md-4"> 4</option>
+								<option <?php if ($rows['columna'] == "col-md-5" ) echo 'selected' ; ?> value="col-md-5"> 5</option>
+								<option <?php if ($rows['columna'] == "col-md-6" ) echo 'selected' ; ?> value="col-md-6"> 6</option>
+								<option <?php if ($rows['columna'] == "col-md-7" ) echo 'selected' ; ?> value="col-md-7"> 7</option>
+								<option <?php if ($rows['columna'] == "col-md-8" ) echo 'selected' ; ?> value="col-md-8"> 8</option>
+								<option <?php if ($rows['columna'] == "col-md-9" ) echo 'selected' ; ?> value="col-md-9"> 9</option>
+								<option <?php if ($rows['columna'] == "col-md-10" ) echo 'selected' ; ?> value="col-md-10"> 10</option>
+								<option <?php if ($rows['columna'] == "col-md-11" ) echo 'selected' ; ?> value="col-md-11"> 11</option>
+								<option <?php if ($rows['columna'] == "col-md-12" ) echo 'selected' ; ?> value="col-md-12"> 12</option>
+					 
+					</select>
+					
+		</td>
+			<td>
+				<input type="text" name="required[<?php echo $id;?>]" class="form-control input-sm" value="{{ $rows['required'] }}" placeholder="Ex : required|email" />
 				
 		</td>
+			
             <td>
 			<a href="javascript:void(0)" class="btn btn-sm btn-default  editForm"  role="button"  
 			onclick="SximoModal('{{ URL::to('sximo/module/editform/'.$row->module_id.'?field='.$rows['field'].'&alias='.$rows['alias']) }}','Edit Field : <?php echo $rows['field'];?>')">
@@ -129,10 +155,7 @@
         </table>
 		</div>
 
- <div class="infobox infobox-danger fade in">
-  <button type="button" class="close" data-dismiss="alert"> x </button>  
-  <p> <strong>Note !</strong> Your primary key must be <strong>show</strong> and in <strong>hidden</strong> type   </p>	
-</div>		
+	
 		
 		<button type="submit" class="btn btn-primary"> Save Changes </button>
 		<input type="hidden" name="module_id" value="{{ $row->module_id }}" />

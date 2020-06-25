@@ -27,7 +27,7 @@ class PostsController extends Controller {
 		$this->data = array(
 			'pageTitle'	=> 	$this->info['title'],
 			'pageNote'	=>  $this->info['note'],
-			'pageModule'=> 'core/posts',
+			'pageModule'=> 'cms/posts',
 			'return'	=> self::returnUrl()
 			
 		);	
@@ -66,6 +66,7 @@ class PostsController extends Controller {
 		}		
 
 		$this->data['groups'] = $group;		
+		$this->data['categories'] = $this->model->categories();	
 		$this->data['row'] = $this->model->getColumnTable( $this->info['table']); 
 		$this->data['id'] = '';
 		return view( 'core.'. $this->module.'.form',$this->data);
@@ -90,7 +91,8 @@ class PostsController extends Controller {
 			$group[] = array('id'=>$g->group_id ,'name'=>$g->name,'access'=> $a); 			
 		}		
 
-		$this->data['groups'] = $group;		
+		$this->data['groups'] = $group;	
+		$this->data['categories'] = $this->model->categories();		
 		$this->data['row'] = (array) $this->data['row'];
 		$this->data['id'] = $id;
 		return view( 'core.'. $this->module.'.form',$this->data);
@@ -134,7 +136,7 @@ class PostsController extends Controller {
 			default:
 				$rules = array(
 					'title'=>'required',
-					'alias'=>'required|alpha_dash',
+					'alias'=>'required',
 					'note'=>'required',
 					'status'=>'required'						
 				);
@@ -142,6 +144,8 @@ class PostsController extends Controller {
 				if ($validator->passes()) 
 				{
 					 $data = $this->validatePost( $request );
+					 
+
 					 $groups = Groups::all();
 					 $access = array();				
 					 foreach($groups as $group) {		 	
@@ -160,16 +164,17 @@ class PostsController extends Controller {
 					if($request->input('alias') =='')
 						$data['alias'] = \SiteHelpers::seourl($data['title']);
 
-
+					$data['cid'] = $request->input('cid');
 					$data['allow_guest'] = $request->input('allow_guest');	
+					$data['headline'] = $request->input('headline');	
 					$id = $this->model->insertRow($data , $request->input('pageID'));
-					if(!is_null($request->input('apply')))
-						return redirect( 'core/'. $this->module .'/'.$id.'/edit?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
+					if($request->has('apply'))
+						return redirect( 'cms/'. $this->module .'/'.$id.'/edit?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
 
-					return redirect( 'core/'.$this->module .'?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
+					return redirect( 'cms/'.$this->module .'?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
 				} 
 				else {
-					return redirect('core/'.$this->module.'/'. $request->input(  $this->info['key']).'/edit' )
+					return redirect( 'cms/'.$this->module .'?'. $this->returnUrl() )
 							->with('message',__('core.note_error'))->with('status','error')
 							->withErrors($validator)->withInput();
 
@@ -177,7 +182,7 @@ class PostsController extends Controller {
 				break;
 			case 'delete':
 				$result = $this->destroy( $request );
-				return redirect('core/'.$this->module.'?'.$this->returnUrl())->with($result);
+				return redirect('cms/'.$this->module.'?'.$this->returnUrl())->with($result);
 				break;
 
 			case 'import':
@@ -233,7 +238,7 @@ class PostsController extends Controller {
 		fwrite($fp,$data); 
 		fclose($fp);
 
-		return Redirect::to('core/posts')
+		return Redirect::to('cms/posts')
         		->with('messagetext', \Lang::get('core.note_success'))->with('msgstatus','success');		
 
 	}

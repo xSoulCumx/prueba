@@ -2,23 +2,31 @@
 @section('content')
 <div class="page-header"><h2> Configuration <small> Mange basic  information and configuration for your application site  </small></h2></div>
 @include('sximo.config.tab')
+ {!! Form::open(array('url'=>'sximo/config/save/', 'class'=>'form-horizontal  validated', 'files' => true)) !!}
 <div class="p-5">
 
-	 {!! Form::open(array('url'=>'sximo/config/save/', 'class'=>'form-horizontal row validated', 'files' => true)) !!}
+	
 
 <div class="row">
+	
   	<div class="col-md-3">
   		<div style="text-align: center; padding-top: 30px;">
       
-			@if(file_exists(public_path().'/uploads/images/'.$sximoconfig['cnf_logo']) && $sximoconfig['cnf_logo'] !='')
-			 	<img src="{{ asset('uploads/images/'.$sximoconfig['cnf_logo'])}}" alt="{{ $sximoconfig['cnf_appname'] }}" width="100" />
-			 	@else
-				<img src="{{ asset('uploads/logo.png')}}" alt="{{ $sximoconfig['cnf_appname'] }}"  width="100" />
-				@endif	
+      			<div class="logo-preview preview-upload">
+					@if(file_exists(public_path().'/uploads/images/'.$sximoconfig['cnf_logo']) && $sximoconfig['cnf_logo'] !='')
+				 		<img src="{{ asset('uploads/images/'.$sximoconfig['cnf_logo'])}}" alt="{{ $sximoconfig['cnf_appname'] }}" width="100" />
+				 	@else
+						<img src="{{ asset('uploads/logo.png')}}" alt="{{ $sximoconfig['cnf_appname'] }}"  width="100" />
+					@endif	
+				</div>
 
-			<br />
-			<p> Please use same dimension image <br />min 100px X 100px </p>
-			<input type="file" name="logo">
+				<p> Please use same dimension image <br />min 100px X 100px </p>
+				<div class="fileUpload btn " > 
+				    <span>  <i class="fa fa-camera"></i>  </span>
+				    <div class="title"> Browse File </div>
+				    <input type="file" name="logo" class="upload"   accept="image/x-png,image/gif,image/jpeg"     />
+				</div>
+
 	    </div>
 
   	</div>
@@ -29,36 +37,36 @@
 
 	<div class="col-sm-6 animated fadeInRight ">
 
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_appname') }} </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_appname') }} </label>
+		<div class="">
 		<input name="cnf_appname" type="text" id="cnf_appname" class="form-control form-control-sm " required  value="{{ $sximoconfig['cnf_appname'] }}" />  
 		 </div> 
 	  </div>  
 	  
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_appdesc') }} </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_appdesc') }} </label>
+		<div class="">
 		<input name="cnf_appdesc" type="text" id="cnf_appdesc" class="form-control form-control-sm" value="{{ $sximoconfig['cnf_appdesc'] }}" /> 
 		 </div> 
 	  </div>  
 	  
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_comname') }} </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_comname') }} </label>
+		<div class="">
 		<input name="cnf_comname" type="text" id="cnf_comname" class="form-control form-control-sm" value="{{ $sximoconfig['cnf_comname'] }}" />  
 		 </div> 
 	  </div>      
 
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_emailsys') }} </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_emailsys') }} </label>
+		<div class="">
 		<input name="cnf_email" type="text" id="cnf_email" class="form-control form-control-sm" value="{{ $sximoconfig['cnf_email'] }}" /> 
 		 </div> 
 	  </div>   
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4"> {{ Lang::get('core.fr_multilanguage') }} <br />  </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label "> {{ Lang::get('core.fr_multilanguage') }} <br />  </label>
+		<div class="">
 			<div class="">
 				<input name="cnf_multilang" type="checkbox" id="cnf_multilang" value="1" class="minimal-green" 
 				@if($sximoconfig['cnf_multilang'] ==1) checked @endif
@@ -67,9 +75,9 @@
 		 </div> 
 	  </div> 
 
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4"> {{ Lang::get('core.fr_allowfrontend') }} <br />  </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label "> {{ Lang::get('core.fr_allowfrontend') }} <br />  </label>
+		<div class="">
 			<div class="">
 				<input name="cnf_front" type="checkbox" id="cnf_front" value="true" class="minimal-green" 
 				@if($sximoconfig['cnf_front'] =='true') checked @endif
@@ -79,9 +87,9 @@
 	  </div> 
 
 	     
-	   <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_mainlanguage') }} </label>
-		<div class="col-md-8">
+	   <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_mainlanguage') }} </label>
+		<div class="">
 
 				<select class="form-control form-control-sm" name="cnf_lang">
 
@@ -95,9 +103,9 @@
 	  </div>   
 	      
 
-	   <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">{{ Lang::get('core.fr_fronttemplate') }}</label>
-		<div class="col-md-8">
+	   <div class="form-group">
+	    <label for="ipt" class=" control-label ">{{ Lang::get('core.fr_fronttemplate') }}</label>
+		<div class="">
 				
 				<select class="form-control form-control-sm" name="cnf_theme" required="true">
 				<option value=""> Select Frontend Template</option>
@@ -112,9 +120,9 @@
 	  </div> 
 
 
-	   <div class="form-group row" style="display: none;">
-	    <label for="ipt" class=" control-label col-md-4"> Backend Template </label>
-		<div class="col-md-8">
+	   <div class="form-group" style="display: none;">
+	    <label for="ipt" class=" control-label "> Backend Template </label>
+		<div class="">
 				
 				<select class="form-control form-control-sm" name="cnf_backend" required="true">
 				<option value="minimal"> Select Backend Template</option>
@@ -129,9 +137,9 @@
 
 	  
 	  
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">&nbsp;</label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">&nbsp;</label>
+		<div class="">
 			<button class="btn btn-primary" type="submit">{{ Lang::get('core.sb_savechanges') }} </button>
 		 </div> 
 	  </div> 
@@ -140,9 +148,9 @@
 	<div class="col-sm-6 animated fadeInRight ">
 
 	  
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4"> {{ Lang::get('core.fr_dateformat') }} </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label "> {{ Lang::get('core.fr_dateformat') }} </label>
+		<div class="">
 			<select class="form-control form-control-sm" name="cnf_date">
 			<?php $dates = array(
 					'Y-m-d'=>' ( Y-m-d ) . Example : '.date('Y-m-d'),
@@ -162,24 +170,24 @@
 		 </div> 
 	  </div>  			
 
-	  <div class="form-group row">
-	    <label for="ipt" class=" control-label col-md-4">Metakey </label>
-		<div class="col-md-8">
+	  <div class="form-group">
+	    <label for="ipt" class=" control-label ">Metakey </label>
+		<div class="">
 			<textarea class="form-control form-control-sm" name="cnf_metakey">{{ $sximoconfig['cnf_metakey'] }}</textarea>
 		 </div> 
 	  </div> 
 
-	   <div class="form-group row">
-	    <label  class=" control-label col-md-4">Meta Description</label>
-		<div class="col-md-8">
+	   <div class="form-group">
+	    <label  class=" control-label ">Meta Description</label>
+		<div class="">
 			<textarea class="form-control form-control-sm"  name="cnf_metadesc">{{ $sximoconfig['cnf_metadesc'] }}</textarea>
 		 </div> 
 	  </div>  
 
 
-	  <div class="form-group row hide">
-	    <label for="ipt" class=" control-label col-md-4"> Development Mode ?   </label>
-		<div class="col-md-8">
+	  <div class="form-group hide">
+	    <label for="ipt" class=" control-label "> Development Mode ?   </label>
+		<div class="">
 			<div class="checkbox">
 				<input name="cnf_mode" type="checkbox" id="cnf_mode" value="1" class="minimal-green" 
 				@if ($sximoconfig['cnf_mode'] =='production') checked @endif
@@ -192,9 +200,10 @@
 	</div>  
 </div>
 </div>
+ 
 </div>
-	 {!! Form::close() !!}   
+	 
 
 </div>
-
+{!! Form::close() !!}  
 @stop

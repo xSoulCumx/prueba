@@ -26,7 +26,7 @@ class PagesController extends Controller {
 		$this->data = array(
 			'pageTitle'	=> 	$this->info['title'],
 			'pageNote'	=>  $this->info['note'],
-			'pageModule'=> 'core/pages',
+			'pageModule'=> 'cms/pages',
 			'return'	=> self::returnUrl()
 			
 		);
@@ -128,6 +128,8 @@ class PagesController extends Controller {
 
 	function store( Request $request  )
 	{
+
+
 		$task = $request->input('action_task');
 		switch ($task)
 		{
@@ -138,6 +140,7 @@ class PagesController extends Controller {
 					'filename'=>'required|alpha',
 					'status'=>'required'						
 				);
+
 				$validator = Validator::make($request->all(), $rules);
 				if ($validator->passes()) 
 				{
@@ -150,10 +153,14 @@ class PagesController extends Controller {
 				 						
 					$data['access'] = json_encode($access);
 					$data['note'] = $request->note;
-					
+
 					$data['allow_guest'] = $request->input('allow_guest');
 					$data['template'] = $request->input('template');
-
+					if($request->input('alias') ==''){
+						$data['alias'] = \SiteHelpers::seourl($data['title']);
+					} else {
+						$data['alias'] = \SiteHelpers::seourl($data['alias']);
+					}
 					
 					
 					if(isset($data['default']) && $data['default'] ==1)
@@ -162,14 +169,16 @@ class PagesController extends Controller {
 						\DB::table('tb_pages')->update(array('default'=>'0'));				
 					}
 					$id = $this->model->insertRow($data , $request->input( $this->info['key']));
+
+				
 					self::createRouters();
 					/* Insert logs */
 					$this->model->logs($request , $id);
 					//if(!is_null($request->input('apply')))
-						return redirect( 'core/'. $this->module .'/'.$id.'/edit?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
+					return redirect( 'cms/'. $this->module .'/'.$id.'/edit?'. $this->returnUrl() )->with('message',__('core.note_success'))->with('status','success');
 				} 
 				else {
-					return redirect('core/'.$this->module.'/'. $request->input(  $this->info['key']).'/edit' )
+					return redirect('cms/'.$this->module.'/'. $request->input(  $this->info['key']).'/edit' )
 							->with('message',__('core.note_error'))->with('status','error')
 							->withErrors($validator)->withInput();
 
@@ -177,7 +186,7 @@ class PagesController extends Controller {
 				break;
 			case 'delete':
 				$result = $this->destroy( $request );
-				return redirect('core/'.$this->module.'?'.$this->returnUrl())->with($result);
+				return redirect('cms/'.$this->module.'?'.$this->returnUrl())->with($result);
 				break;
 
 			case 'import':
@@ -186,7 +195,7 @@ class PagesController extends Controller {
 
 			case 'copy':
 				$result = $this->copy( $request );
-				return redirect('core/'.$this->module.'?'.$this->returnUrl())->with($result);
+				return redirect('cms/'.$this->module.'?'.$this->returnUrl())->with($result);
 				break;		
 		}	
 	
@@ -203,10 +212,9 @@ class PagesController extends Controller {
 			return redirect('dashboard')
 				->with('message', __('core.note_restric'))->with('status','error');
 		// delete multipe rows 
-		if(count($request->input('ids')) >=1)
+		if(!is_null($request->input('ids')) )
 		{
-			$this->model->destroy($request->input('ids'));
-			
+			$this->model->destroy($request->input('ids'));			
 			\SiteHelpers::auditTrail( $request , "ID : ".implode(",",$request->input('ids'))."  , Has Been Removed Successfull");
 			// redirect
         	return ['message'=>__('core.note_success_delete'),'status'=>'success'];	
@@ -240,7 +248,7 @@ class PagesController extends Controller {
 		$this->data['tableForm'] 	= $this->info['config']['forms'];	
 		$this->data['tableGrid'] 	= $this->info['config']['grid'];
 		$this->data['searchMode'] = 'native';
-		$this->data['pageUrl']		= url('core/pages');
+		$this->data['pageUrl']		= url('cms/pages');
 		return view('sximo.module.utility.search',$this->data);
 	
 	}

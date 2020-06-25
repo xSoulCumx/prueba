@@ -1,3 +1,6 @@
+
+
+
 {!! Form::open(array('url'=>$action, 'class'=>'form-horizontal','id'=>'saveform' , 'parsley-validate'=>'','novalidate'=>' ')) !!}
 			<div class="col-md-6 form-horizontal">
 				<div class="form-group">
@@ -32,7 +35,7 @@
 			
 		
 		<div class="table-responsive" style="background:#fff;">
-			<table class="table table-bordered" id="tables">
+			<table class="table " id="tables">
 				<thead>
 					<tr>
 						

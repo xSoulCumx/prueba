@@ -1,6 +1,7 @@
 <?php  $menus = SiteHelpers::menus('top') ;?>
 
     <ul class="nav-menu">
+        <li><a href="{{ url('')}}"> Home </a></li>
         @foreach ($menus as $menu)
         @if($menu['module'] =='separator')
         <li class="divider"></li>        
